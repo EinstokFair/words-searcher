@@ -1,12 +1,19 @@
 build:gentoo:
   stage: build
-  image: gentoo/stage3-amd64
+  image: gentoo/stage3:latest
   rules:
     - changes:
         - packaging/gentoo/**/*
         - src/**/*
         - Makefile.am
         - configure.ac
+  cache:
+    key: gentoo-portage-repo
+    paths:
+      - /var/db/repos/gentoo
+  variables:
+    FEATURES: "buildpkg"
+    PORTAGE_BINHOST: ""
   script:
     - mkdir -p /etc/portage/repos.conf
     - |
@@ -16,8 +23,11 @@ build:gentoo:
       priority = 100
       CONF
     - mkdir -p /var/cache/binpkgs
+    # Синхронизация дерева Portage (если кэш есть, emerge --sync может быть быстрее)
     - emerge --sync || true
+    # Сборка с сохранением бинарного пакета
     - emerge --buildpkg --oneshot app-misc/words-searcher
+    # Копирование бинарного пакета в артефакты
     - mkdir -p binpkgs
     - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true
   artifacts:
