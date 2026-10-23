@@ -27,7 +27,10 @@ words_searcher_LDADD = $(QT6_LIBS)
 src/moc_%.cpp: src/%.h
 	$(MOC) $< -o $@
 
-EXTRA_DIST = COPYING README.en.md
+EXTRA_DIST = COPYING README.en.md \
+             resources.qrc \
+             translations/words-searcher_en.ts \
+             translations/words-searcher_en.qm
 
 translations/words-searcher_en.qm: translations/words-searcher_en.ts
 	$(LRELEASE) $< -qm $@
