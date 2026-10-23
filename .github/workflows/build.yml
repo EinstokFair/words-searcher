@@ -15,7 +15,7 @@ on:
       - '.github/README.md'
 
 jobs:
-  build:dist:
+  build-dist:
     runs-on: ubuntu-latest
     container: debian:trixie-slim
     steps:
@@ -37,10 +37,10 @@ jobs:
           name: words-searcher-tarball
           path: words-searcher-*.tar.gz
 
-  build:debian:
+  build-debian:
     runs-on: ubuntu-latest
     container: debian:trixie-slim
-    needs: build:dist
+    needs: build-dist
     steps:
       - uses: actions/checkout@v4
       - name: Download tarball
