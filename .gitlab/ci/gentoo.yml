@@ -13,6 +13,8 @@ build:gentoo:
         - configure.ac
         - .gitlab-ci.yml
         - .gitlab/ci/**/*
+  variables:
+    ACCEPT_KEYWORDS: "~amd64"
   script:
     - mkdir -p /etc/portage/repos.conf /var/cache/distfiles /var/cache/binpkgs
     - |
