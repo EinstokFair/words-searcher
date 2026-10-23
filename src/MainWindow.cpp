@@ -2,6 +2,8 @@
 #include "SettingsDialog.h"
 #include "FsProxyModel.h"
 #include <QApplication>
+#include <QClipboard>
+#include <QGuiApplication>
 #include <QDir>
 #include <QFileSystemModel>
 #include <QHeaderView>
@@ -353,6 +355,17 @@ void MainWindow::onContextMenu(const QPoint &pos)
 
     QMenu menu(this);
 
+    // Копирование — общее для файла и каталога
+    QAction *actCopyDir = menu.addAction(tr("Копировать каталог"));
+    connect(actCopyDir, &QAction::triggered, this, [fi]() {
+        QGuiApplication::clipboard()->setText(fi.absolutePath());
+    });
+    QAction *actCopyPath = menu.addAction(tr("Копировать полный путь"));
+    connect(actCopyPath, &QAction::triggered, this, [fi]() {
+        QGuiApplication::clipboard()->setText(fi.absoluteFilePath());
+    });
+    menu.addSeparator();
+
     if (isDir) {
         QAction *actDolphin = menu.addAction(tr("Открыть директорию в Dolphin"));
         connect(actDolphin, &QAction::triggered, this, [fi]() {
@@ -365,6 +378,7 @@ void MainWindow::onContextMenu(const QPoint &pos)
     } else {
         QSettings s;
         QStringList editorList = s.value(QStringLiteral("editorList"), QStringList()).toStringList();
+        bool editorsAdded = false;
 
         for (const QString &entry : editorList) {
             const QStringList parts = entry.split('|');
@@ -382,8 +396,9 @@ void MainWindow::onContextMenu(const QPoint &pos)
                 arg.replace("$FONT_SIZE", QString::number(fontSize));
                 QProcess::startDetached(path, {arg});
             });
+            editorsAdded = true;
         }
-        menu.addSeparator();
+        if (editorsAdded) menu.addSeparator();
         QAction *actFirefox = menu.addAction(tr("Открыть файл в Firefox"));
         connect(actFirefox, &QAction::triggered, this, [fi]() {
             QProcess::startDetached("firefox", {fi.absoluteFilePath()});
