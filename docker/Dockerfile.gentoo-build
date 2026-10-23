@@ -12,8 +12,8 @@ RUN emerge-webrsync \
       dev-libs/glib \
       dev-libs/gobject-introspection \
       dev-build/autoconf \
-      sys-devel/automake \
-      sys-devel/libtool \
+      dev-build/automake \
+      dev-build/libtool \
       dev-build/make \
       dev-util/pkgconf \
  && rm -rf /var/db/repos/gentoo/.git /var/cache/distfiles/*
