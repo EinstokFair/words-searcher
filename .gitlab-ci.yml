@@ -7,9 +7,18 @@ build:dist:
   image: debian:trixie-slim
   variables:
     SOURCE_DATE_EPOCH: "0"
+    APT_CACHE_DIR: "$CI_PROJECT_DIR/.apt-cache/archives"
+  cache:
+    key: apt-trixie-$CI_JOB_NAME
+    when: always
+    paths:
+      - .apt-cache
+  before_script:
+    - rm -f /etc/apt/apt.conf.d/docker-clean
+    - mkdir -p "$APT_CACHE_DIR/partial" /var/lib/apt/lists
   script:
-    - apt-get update
-    - apt-get install -y --no-install-recommends build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools autoconf automake libtool pkg-config ca-certificates
+    - apt-get update -o Dir::Cache::archives="$APT_CACHE_DIR"
+    - apt-get install -y --no-install-recommends -o Dir::Cache::archives="$APT_CACHE_DIR" build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools autoconf automake libtool pkg-config ca-certificates
     - autoreconf -fi
     - ./configure
     - make dist
@@ -28,9 +37,19 @@ build:debian:
     - build:dist
   dependencies:
     - build:dist
+  variables:
+    APT_CACHE_DIR: "$CI_PROJECT_DIR/.apt-cache/archives"
+  cache:
+    key: apt-trixie-$CI_JOB_NAME
+    when: always
+    paths:
+      - .apt-cache
+  before_script:
+    - rm -f /etc/apt/apt.conf.d/docker-clean
+    - mkdir -p "$APT_CACHE_DIR/partial" /var/lib/apt/lists
   script:
-    - apt-get update
-    - apt-get install -y --no-install-recommends build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools qt6-translations-l10n autoconf automake libtool pkg-config ca-certificates debhelper dpkg-dev
+    - apt-get update -o Dir::Cache::archives="$APT_CACHE_DIR"
+    - apt-get install -y --no-install-recommends -o Dir::Cache::archives="$APT_CACHE_DIR" build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools qt6-translations-l10n autoconf automake libtool pkg-config ca-certificates debhelper dpkg-dev
     # Распаковываем tarball из артефакта (версия — из имени файла)
     - TARBALL=$(basename words-searcher-*.tar.gz)
     - DIR=${TARBALL%.tar.gz}
