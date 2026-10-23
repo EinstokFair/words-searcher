@@ -2,31 +2,75 @@ name: Build
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
+    paths-ignore:
+      - 'doc/**'
+      - '**.md'
+      - '.github/README.md'
   pull_request:
-    branches: [ master ]
+    branches: [master]
+    paths-ignore:
+      - 'doc/**'
+      - '**.md'
+      - '.github/README.md'
 
 jobs:
-  build:
+  build:dist:
     runs-on: ubuntu-latest
     container: debian:trixie-slim
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
-            build-essential qt6-base-dev qt6-base-dev-tools qt6-translations-l10n \
+            build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools \
             autoconf automake libtool pkg-config ca-certificates
-
-      - name: Build
+      - name: Build tarball
         run: |
           autoreconf -fi
           ./configure
-          make -j"$(nproc)"
+          make dist
+      - name: Upload tarball
+        uses: actions/upload-artifact@v4
+        with:
+          name: words-searcher-tarball
+          path: words-searcher-*.tar.gz
 
-      - name: Smoke test (offscreen)
+  build:debian:
+    runs-on: ubuntu-latest
+    container: debian:trixie-slim
+    needs: build:dist
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: words-searcher-tarball
+      - name: Install dependencies
         run: |
-          QT_QPA_PLATFORM=offscreen timeout 5 ./words-searcher || test $? -eq 124
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools \
+            qt6-translations-l10n autoconf automake libtool pkg-config \
+            ca-certificates debhelper dpkg-dev
+      - name: Build .deb
+        run: |
+          TARBALL=$(basename words-searcher-*.tar.gz)
+          DIR=${TARBALL%.tar.gz}
+          tar xzf "$TARBALL"
+          cd "$DIR"
+          cp -r ../packaging/debian debian
+          dpkg-buildpackage -us -uc -b
+          cd ..
+          mkdir -p debs
+          mv ./*.deb debs/ 2>/dev/null || true
+      - name: Smoke test
+        run: |
+          DIR=$(basename words-searcher-*.tar.gz .tar.gz)
+          QT_QPA_PLATFORM=offscreen timeout 5 "./$DIR/words-searcher" || test $? -eq 124
+      - name: Upload .deb
+        uses: actions/upload-artifact@v4
+        with:
+          name: words-searcher-deb
+          path: debs/*.deb
