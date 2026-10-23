@@ -13,7 +13,6 @@ build:gentoo:
       - /var/db/repos/gentoo
   variables:
     FEATURES: "buildpkg"
-    PORTAGE_BINHOST: ""
   script:
     - mkdir -p /etc/portage/repos.conf
     - |
@@ -23,11 +22,10 @@ build:gentoo:
       priority = 100
       CONF
     - mkdir -p /var/cache/binpkgs
-    # Синхронизация дерева Portage (если кэш есть, emerge --sync может быть быстрее)
-    - emerge --sync || true
-    # Сборка с сохранением бинарного пакета
-    - emerge --buildpkg --oneshot app-misc/words-searcher
-    # Копирование бинарного пакета в артефакты
+    # Используем webrsync (сжатый снапшот, меньше вывода), чем rsync
+    - emerge-webrsync || true
+    # Собираем с сохранением вывода в файл, чтобы показать только ошибку при падении
+    - (emerge --buildpkg --oneshot app-misc/words-searcher > /tmp/emerge.log 2>&1 || (tail -n 50 /tmp/emerge.log && false))
     - mkdir -p binpkgs
     - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true
   artifacts:
