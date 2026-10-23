@@ -19,6 +19,7 @@
 #include <QEvent>
 #include <QWindow>
 #include <QProcess>
+#include <QRegularExpression>
 #include <QDesktopServices>
 #include <QCoreApplication>
 #include <QShortcut>
@@ -115,7 +116,7 @@ void MainWindow::onSettings()
     SettingsDialog dlg(this);
     dlg.setRootPath(s.value(QStringLiteral("rootPath"), QDir::homePath()).toString());
     dlg.setShowHidden(s.value(QStringLiteral("showHidden"), false).toBool());
-    dlg.setEditorPath(s.value(QStringLiteral("editorPath"), QStringLiteral("gedit")).toString());
+    dlg.setEditorList(s.value(QStringLiteral("editorList"), QStringList()).toStringList());
     if (dlg.exec() == QDialog::Accepted) {
         const QString p = dlg.rootPath();
         QFileInfo fi(p);
@@ -357,25 +358,30 @@ void MainWindow::onContextMenu(const QPoint &pos)
         connect(actDolphin, &QAction::triggered, this, [fi]() {
             QProcess::startDetached("dolphin", {fi.absoluteFilePath()});
         });
-
         QAction *actNautilus = menu.addAction(tr("Открыть директорию в Nautilus"));
         connect(actNautilus, &QAction::triggered, this, [fi]() {
             QProcess::startDetached("nautilus", {fi.absoluteFilePath()});
         });
     } else {
+        QSettings s;
+        QStringList editorList = s.value(QStringLiteral("editorList"), QStringList()).toStringList();
+
+        for (const QString &entry : editorList) {
+            const int sep = entry.indexOf('|');
+            QString name = (sep >= 0) ? entry.left(sep) : QFileInfo(entry).fileName();
+            QString path = (sep >= 0) ? entry.mid(sep + 1) : entry;
+            QAction *act = menu.addAction(tr("Открыть в %1").arg(name));
+            connect(act, &QAction::triggered, this, [path, fi]() {
+                QProcess::startDetached(path, {fi.absoluteFilePath()});
+            });
+        }
+        menu.addSeparator();
         QAction *actFirefox = menu.addAction(tr("Открыть файл в Firefox"));
         connect(actFirefox, &QAction::triggered, this, [fi]() {
             QProcess::startDetached("firefox", {fi.absoluteFilePath()});
-        });
-
-        QAction *actEditor = menu.addAction(tr("Открыть файл в редакторе"));
-        connect(actEditor, &QAction::triggered, this, [this, fi]() {
-            QSettings s;
-            QString editor = s.value(QStringLiteral("editorPath"), "gedit").toString();
-            if (editor.isEmpty()) editor = "gedit";
-            QProcess::startDetached(editor, {fi.absoluteFilePath()});
         });
     }
 
     menu.exec(m_tree->viewport()->mapToGlobal(pos));
 }
+

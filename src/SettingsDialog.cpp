@@ -5,7 +5,9 @@
 #include <QFileInfo>
 #include <QFormLayout>
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QLineEdit>
+#include <QTreeWidget>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
@@ -25,22 +27,31 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     pathRow->addWidget(m_pathEdit, 1);
     pathRow->addWidget(browse);
 
-    m_editorPathEdit = new QLineEdit(this);
-    auto *browseEditor = new QPushButton(tr("Обзор…"), this);
-    connect(browseEditor, &QPushButton::clicked, this, [this]() {
-        const QString p = QFileDialog::getOpenFileName(this, tr("Выбор редактора"), m_editorPathEdit->text());
-        if (!p.isEmpty()) m_editorPathEdit->setText(p);
-    });
-    auto *editorRow = new QHBoxLayout;
-    editorRow->addWidget(m_editorPathEdit, 1);
-    editorRow->addWidget(browseEditor);
-
     m_hidden = new QCheckBox(tr("Показывать скрытые"), this);
+
+    m_editorList = new QTreeWidget(this);
+    m_editorList->setColumnCount(2);
+    m_editorList->setHeaderLabels({tr("Название"), tr("Путь")});
+    m_editorList->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_editorList->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_editorList->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
+    m_editorList->setRootIsDecorated(false);
+
+    auto *addBtn = new QPushButton(tr("Добавить"), this);
+    auto *removeBtn = new QPushButton(tr("Удалить"), this);
+    connect(addBtn, &QPushButton::clicked, this, &SettingsDialog::onAddEditor);
+    connect(removeBtn, &QPushButton::clicked, this, &SettingsDialog::onRemoveEditor);
+
+    auto *btnRow = new QHBoxLayout;
+    btnRow->addWidget(addBtn);
+    btnRow->addWidget(removeBtn);
+    btnRow->addStretch();
 
     auto *form = new QFormLayout;
     form->addRow(tr("Корневая директория:"), pathRow);
-    form->addRow(tr("Редактор:"), editorRow);
     form->addRow(QString(), m_hidden);
+    form->addRow(tr("Редакторы:"), m_editorList);
+    form->addRow(QString(), btnRow);
 
     auto *buttons = new QDialogButtonBox(
         QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply,
@@ -63,6 +74,48 @@ QString SettingsDialog::rootPath() const { return m_pathEdit->text().trimmed(); 
 void SettingsDialog::setShowHidden(bool on) { m_hidden->setChecked(on); }
 bool SettingsDialog::showHidden() const { return m_hidden->isChecked(); }
 
+void SettingsDialog::setEditorList(const QStringList &list)
+{
+    m_editorList->clear();
+    for (const QString &entry : list) {
+        const int sep = entry.indexOf('|');
+        QString name = (sep >= 0) ? entry.left(sep) : QFileInfo(entry).fileName();
+        QString path = (sep >= 0) ? entry.mid(sep + 1) : entry;
+        auto *item = new QTreeWidgetItem(m_editorList);
+        item->setText(0, name);
+        item->setText(1, path);
+    }
+}
+
+QStringList SettingsDialog::editorList() const
+{
+    QStringList list;
+    for (int i = 0; i < m_editorList->topLevelItemCount(); ++i) {
+        QTreeWidgetItem *item = m_editorList->topLevelItem(i);
+        const QString name = item->text(0).trimmed();
+        const QString path = item->text(1).trimmed();
+        if (!path.isEmpty())
+            list << (name + "|" + path);
+    }
+    return list;
+}
+
+void SettingsDialog::onAddEditor()
+{
+    const QString p = QFileDialog::getOpenFileName(this, tr("Выбор редактора"));
+    if (p.isEmpty()) return;
+    auto *item = new QTreeWidgetItem(m_editorList);
+    item->setText(0, QFileInfo(p).fileName());
+    item->setText(1, p);
+    m_editorList->editItem(item, 0);
+}
+
+void SettingsDialog::onRemoveEditor()
+{
+    QTreeWidgetItem *item = m_editorList->currentItem();
+    if (item) delete m_editorList->takeTopLevelItem(m_editorList->indexOfTopLevelItem(item));
+}
+
 void SettingsDialog::onBrowse()
 {
     const QString p = QFileDialog::getExistingDirectory(
@@ -70,9 +123,6 @@ void SettingsDialog::onBrowse()
     if (!p.isEmpty())
         m_pathEdit->setText(p);
 }
-
-void SettingsDialog::setEditorPath(const QString &p) { m_editorPathEdit->setText(p); }
-QString SettingsDialog::editorPath() const { return m_editorPathEdit->text().trimmed(); }
 
 bool SettingsDialog::validateAndApply()
 {
@@ -87,7 +137,7 @@ bool SettingsDialog::validateAndApply()
     QSettings s;
     s.setValue(QStringLiteral("rootPath"), p);
     s.setValue(QStringLiteral("showHidden"), showHidden());
-    s.setValue(QStringLiteral("editorPath"), editorPath());
+    s.setValue(QStringLiteral("editorList"), editorList());
 
     emit settingsApplied(p, showHidden());
     return true;
