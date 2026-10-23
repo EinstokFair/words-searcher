@@ -34,17 +34,20 @@ AS_IF([test -z "$LUPDATE"], [AC_PATH_PROG([LUPDATE], [lupdate-qt6], [no])])
 AS_IF([test "x$LUPDATE" = "xno"], [AC_PATH_PROG([LUPDATE], [lupdate], [no])])
 # В Debian trixie прямой бинарник Qt6 лежит в /usr/lib/qt6/bin
 AS_IF([test "x$LUPDATE" = "xno" -a -x /usr/lib/qt6/bin/lupdate], [LUPDATE=/usr/lib/qt6/bin/lupdate])
+AC_MSG_NOTICE([using lupdate: $LUPDATE])
 AC_ARG_VAR([LRELEASE], [Qt6 lrelease compiler])
 AS_IF([test -z "$LRELEASE"], [AC_PATH_PROG([LRELEASE], [lrelease-qt6], [no])])
 AS_IF([test "x$LRELEASE" = "xno"], [AC_PATH_PROG([LRELEASE], [lrelease], [no])])
 # В Debian trixie прямой бинарник Qt6 лежит в /usr/lib/qt6/bin
 AS_IF([test "x$LRELEASE" = "xno" -a -x /usr/lib/qt6/bin/lrelease], [LRELEASE=/usr/lib/qt6/bin/lrelease])
+AC_MSG_NOTICE([using lrelease: $LRELEASE])
 
 
 AC_ARG_VAR([RCC], [Qt6 rcc compiler])
 AS_IF([test -z "$RCC"], [AC_PATH_PROG([RCC], [rcc-qt6], [no])])
 AS_IF([test "x$RCC" = "xno"], [AC_PATH_PROG([RCC], [rcc], [no])])
 AS_IF([test "x$RCC" = "xno" -a -x /usr/lib/qt6/libexec/rcc], [RCC=/usr/lib/qt6/libexec/rcc])
+AC_MSG_NOTICE([using rcc: $RCC])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
