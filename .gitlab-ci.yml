@@ -24,6 +24,8 @@ include:
 build:debian:
   stage: build
   image: debian:trixie-slim
+  needs:
+    - build:dist
   dependencies:
     - build:dist
   script:
