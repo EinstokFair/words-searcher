@@ -15,6 +15,11 @@ RUN emerge -v --oneshot \
       dev-qt/qttools:6[linguist] \
       dev-qt/qttranslations:6
 
+# USE для gobject-introspection — до слоя 4
+RUN mkdir -p /etc/portage/package.use \
+ && printf "dev-libs/gobject-introspection -doctool -gtk-doc -test\n" \
+      > /etc/portage/package.use/gobject-introspection
+
 # Слой 4: glib / gobject-introspection
 RUN emerge -v --oneshot \
       dev-libs/glib \
@@ -24,8 +29,5 @@ RUN emerge -v --oneshot \
 RUN emerge -v --oneshot \
       dev-build/make \
       dev-util/pkgconf
-
-# USE для gobject-introspection — до emerge (слой 4). Перенесено в начало:
-# (см. комментарий: package.use должен быть создан до emerge gobject-introspection)
 
 ENV FEATURES="buildpkg"
