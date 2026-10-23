@@ -4,13 +4,13 @@ FROM gentoo/stage3:latest
 RUN emerge-webrsync
 
 # Слой 2: Autotools
-RUN emerge -v --oneshot \
+RUN emerge -v --getbinpkgonly --oneshot \
       dev-build/autoconf \
       dev-build/automake \
       dev-build/libtool
 
 # Слой 3: Qt6
-RUN emerge -v --oneshot \
+RUN emerge -v --getbinpkgonly --oneshot \
       dev-qt/qtbase:6 \
       dev-qt/qttools:6[linguist] \
       dev-qt/qttranslations:6
@@ -21,12 +21,12 @@ RUN mkdir -p /etc/portage/package.use \
       > /etc/portage/package.use/gobject-introspection
 
 # Слой 4: glib / gobject-introspection
-RUN emerge -v --oneshot \
+RUN emerge -v --getbinpkgonly --oneshot \
       dev-libs/glib \
       dev-libs/gobject-introspection
 
 # Слой 5: остальное
-RUN emerge -v --oneshot \
+RUN emerge -v --getbinpkgonly --oneshot \
       dev-build/make \
       dev-util/pkgconf
 
