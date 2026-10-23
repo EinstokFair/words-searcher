@@ -22,17 +22,22 @@ include:
 build:debian:
   stage: build
   image: debian:trixie-slim
-  rules:
-    - changes:
-        - src/**/*
-        - Makefile.am
-        - configure.ac
-        - .gitlab-ci.yml
-        - .gitlab/ci/debian.yml
+  dependencies:
+    - build:dist
   script:
     - apt-get update
-    - apt-get install -y --no-install-recommends build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools qt6-translations-l10n autoconf automake libtool pkg-config ca-certificates
-    - autoreconf -fi
-    - ./configure
-    - make -j"$(nproc)"
-    - QT_QPA_PLATFORM=offscreen timeout 5 ./words-searcher || test $? -eq 124
+    - apt-get install -y --no-install-recommends build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools qt6-translations-l10n autoconf automake libtool pkg-config ca-certificates debhelper dpkg-dev
+    # Распаковываем tarball из артефакта
+    - tar xzf words-searcher-0.0.1.tar.gz
+    - cd words-searcher-0.0.1
+    # Копируем debian/ из репозитория (он лежит в packaging/debian)
+    - cp -r ../packaging/debian debian
+    # Собираем .deb
+    - dpkg-buildpackage -us -uc -b
+    # Smoke-тест (опционально)
+    - cd ..
+    - QT_QPA_PLATFORM=offscreen timeout 5 ./words-searcher-0.0.1/words-searcher || test $? -eq 124
+  artifacts:
+    paths:
+      - ./*.deb
+    expire_in: 1 week
