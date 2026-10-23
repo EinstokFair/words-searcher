@@ -98,9 +98,30 @@ int main(int argc, char *argv[]) {
     }
 
     // Обновление документов (всегда)
-    QRegularExpression docRe(QStringLiteral("<!--VERSION\\(N\\.N\\.N\\)-->[0-9.]+"));
+    // Четыре формы маркера: N.N.N.N, N.N.N, N.N, N.
+    // Значение версии подставляется в той же форме, что и маска.
+    const QStringList vParts = version.split('.');
+    auto part = [&vParts](int i) -> QString {
+        return i < vParts.size() ? vParts[i] : QStringLiteral("0");
+    };
+    const QString v4 = part(0) + "." + part(1) + "." + part(2) + "." + part(3);
+    const QString v3 = part(0) + "." + part(1) + "." + part(2);
+    const QString v2 = part(0) + "." + part(1);
+    const QString v1 = part(0);
+
     for (const QString &doc : documents) {
-        replaceInFile(root + "/" + doc, docRe, "<!--VERSION(N.N.N)-->" + version);
+        replaceInFile(root + "/" + doc,
+            QRegularExpression(QStringLiteral("<!--VERSION\\(N\\.N\\.N\\.N\\)-->[0-9.]+")),
+            "<!--VERSION(N.N.N.N)-->" + v4);
+        replaceInFile(root + "/" + doc,
+            QRegularExpression(QStringLiteral("<!--VERSION\\(N\\.N\\.N\\)-->[0-9.]+")),
+            "<!--VERSION(N.N.N)-->" + v3);
+        replaceInFile(root + "/" + doc,
+            QRegularExpression(QStringLiteral("<!--VERSION\\(N\\.N\\)-->[0-9.]+")),
+            "<!--VERSION(N.N)-->" + v2);
+        replaceInFile(root + "/" + doc,
+            QRegularExpression(QStringLiteral("<!--VERSION\\(N\\)-->[0-9.]+")),
+            "<!--VERSION(N)-->" + v1);
     }
 
     QTextStream(stdout) << "Version " << version << " set"
