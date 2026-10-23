@@ -40,5 +40,11 @@ AS_IF([test "x$LRELEASE" = "xno"], [AC_PATH_PROG([LRELEASE], [lrelease], [no])])
 # В Debian trixie прямой бинарник Qt6 лежит в /usr/lib/qt6/bin
 AS_IF([test "x$LRELEASE" = "xno" -a -x /usr/lib/qt6/bin/lrelease], [LRELEASE=/usr/lib/qt6/bin/lrelease])
 
+
+AC_ARG_VAR([RCC], [Qt6 rcc compiler])
+AS_IF([test -z "$RCC"], [AC_PATH_PROG([RCC], [rcc-qt6], [no])])
+AS_IF([test "x$RCC" = "xno"], [AC_PATH_PROG([RCC], [rcc], [no])])
+AS_IF([test "x$RCC" = "xno" -a -x /usr/lib/qt6/libexec/rcc], [RCC=/usr/lib/qt6/libexec/rcc])
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

@@ -2,7 +2,9 @@
 #include <QMainWindow>
 class QCloseEvent;
 class QKeyEvent;
+class QEvent;
 class QShortcut;
+class QTranslator;
 class FsProxyModel;
 
 class QTreeView;
@@ -22,11 +24,16 @@ private slots:
     void onZoomOut();
     void onThemeLight();
     void onThemeDark();
+    void onLangRu();
+    void onLangEn();
+    void switchLanguage(const QString &code);
+    void retranslateUi();
     void applyTheme(bool dark);
     void applyFontDelta(int delta);
 
 protected:
     void closeEvent(QCloseEvent *e) override;
+    void changeEvent(QEvent *e) override;
     void keyPressEvent(QKeyEvent *e) override;
 
 private:
@@ -36,6 +43,7 @@ private:
     QTreeView *m_tree = nullptr;
     QFileSystemModel *m_fsModel = nullptr;
     FsProxyModel *m_proxy = nullptr;
+    QTranslator *m_translator = nullptr;
     int m_fontDelta = 0;
     int m_baseFontPointSize = 0;
 };

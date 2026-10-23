@@ -1,5 +1,5 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/i18n">
-    <file>translations/words-searcher_en.qm</file>
+    <file alias="words-searcher_en.qm">translations/words-searcher_en.qm</file>
 </qresource>
 </RCC>

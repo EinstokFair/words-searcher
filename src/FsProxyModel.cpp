@@ -14,9 +14,9 @@ QVariant FsProxyModel::headerData(int section, Qt::Orientation orientation,
         return QVariant();
     switch (section) {
     case ColIcon: return QString();
-    case ColDate: return QStringLiteral("Дата");
-    case ColName: return QStringLiteral("Имя");
-    case ColSize: return QStringLiteral("Размер");
+    case ColDate: return tr("Дата");
+    case ColName: return tr("Имя");
+    case ColSize: return tr("Размер");
     }
     return QVariant();
 }

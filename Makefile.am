@@ -4,7 +4,6 @@ bin_PROGRAMS = words-searcher
 
 words_searcher_SOURCES = \
     src/main.cpp \
-    resources.qrc \
     src/MainWindow.cpp \
     src/MainWindow.h \
     src/SettingsDialog.cpp \
@@ -15,7 +14,8 @@ words_searcher_SOURCES = \
 nodist_words_searcher_SOURCES = \
     src/moc_MainWindow.cpp \
     src/moc_SettingsDialog.cpp \
-    src/moc_FsProxyModel.cpp
+    src/moc_FsProxyModel.cpp \
+    qrc_resources.cpp
 
 BUILT_SOURCES = $(nodist_words_searcher_SOURCES)
 CLEANFILES = $(nodist_words_searcher_SOURCES)
@@ -34,3 +34,9 @@ translations/words-searcher_en.qm: translations/words-searcher_en.ts
 
 BUILT_SOURCES += translations/words-searcher_en.qm
 CLEANFILES += translations/words-searcher_en.qm
+
+qrc_resources.cpp: resources.qrc translations/words-searcher_en.qm
+	$(RCC) -name resources $< -o $@
+
+BUILT_SOURCES += qrc_resources.cpp
+CLEANFILES += qrc_resources.cpp

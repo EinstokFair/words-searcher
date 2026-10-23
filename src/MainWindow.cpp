@@ -15,13 +15,19 @@
 #include <QPalette>
 #include <QStyle>
 #include <QKeyEvent>
+#include <QTranslator>
+#include <QEvent>
+#include <QWindow>
+#include <QCoreApplication>
 #include <QShortcut>
 #include <QKeySequence>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle(tr("words-searcher"));
+    qDebug() << "[i18n] setWindowTitle to" << tr("Искатель слов");
+    setWindowTitle(tr("Искатель слов"));
+    if (windowHandle()) windowHandle()->setTitle(tr("Искатель слов"));
     {
         QFont f0 = QApplication::font();
         m_baseFontPointSize = f0.pointSize() > 0 ? f0.pointSize() : 10;
@@ -33,45 +39,18 @@ MainWindow::MainWindow(QWidget *parent)
     m_tree->setAlternatingRowColors(true);
     setCentralWidget(m_tree);
 
-    QMenu *searchMenu = menuBar()->addMenu(tr("Поиск"));
-    QAction *actQuit = searchMenu->addAction(tr("Выход"));
-    connect(actQuit, &QAction::triggered, this, &QWidget::close);
-
-    QMenu *viewMenu = menuBar()->addMenu(tr("Вид"));
-    QAction *actZoomIn = viewMenu->addAction(tr("Увеличить шрифт"));
-    connect(actZoomIn, &QAction::triggered, this, &MainWindow::onZoomIn);
-    QAction *actZoomOut = viewMenu->addAction(tr("Уменьшить шрифт"));
-    connect(actZoomOut, &QAction::triggered, this, &MainWindow::onZoomOut);
-    viewMenu->addSeparator();
-    QAction *actRefresh = viewMenu->addAction(tr("Обновить"));
-    actRefresh->setShortcut(QKeySequence(Qt::Key_F5));
-    connect(actRefresh, &QAction::triggered, this, &MainWindow::onRefresh);
-    QAction *actHidden = viewMenu->addAction(tr("Показать скрытые"));
-    actHidden->setCheckable(true);
-    connect(actHidden, &QAction::toggled, this, &MainWindow::onToggleHidden);
-
-    QMenu *helpMenu = menuBar()->addMenu(tr("Справка"));
-    QAction *actSettings = helpMenu->addAction(tr("Настройки…"));
-    connect(actSettings, &QAction::triggered, this, &MainWindow::onSettings);
-    helpMenu->addSeparator();
-    QAction *actLight = helpMenu->addAction(tr("Светлая тема"));
-    connect(actLight, &QAction::triggered, this, &MainWindow::onThemeLight);
-    QAction *actDark = helpMenu->addAction(tr("Тёмная тема"));
-    connect(actDark, &QAction::triggered, this, &MainWindow::onThemeDark);
-    helpMenu->addSeparator();
-    QAction *actAbout = helpMenu->addAction(tr("О программе"));
-    connect(actAbout, &QAction::triggered, this, [this]() {
-        QMessageBox::about(this, tr("О программе"),
-                           tr("words-searcher 0.0.1"));
-    });
-
     setupModel();
+    retranslateUi();
+    {
+        QSettings langSettings;
+        QString lang = langSettings.value(QStringLiteral("language"), QStringLiteral("ru")).toString();
+        switchLanguage(lang);
+    }
 
     QSettings s;
     const QString root = s.value(QStringLiteral("rootPath"),
                                  QDir::homePath()).toString();
     const bool showHidden = s.value(QStringLiteral("showHidden"), false).toBool();
-    actHidden->setChecked(showHidden);
     m_fsModel->setFilter(showHidden
         ? (QDir::AllEntries | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System)
         : (QDir::AllEntries | QDir::NoDotAndDotDot));
@@ -251,4 +230,103 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         }
     }
     QMainWindow::keyPressEvent(e);
+}
+
+void MainWindow::onLangRu()
+{
+    switchLanguage(QStringLiteral("ru"));
+}
+
+void MainWindow::onLangEn()
+{
+    switchLanguage(QStringLiteral("en"));
+}
+
+void MainWindow::switchLanguage(const QString &code)
+{
+    qDebug() << "[i18n] switchLanguage to" << code;
+    if (!m_translator) {
+        m_translator = new QTranslator(this);
+        qDebug() << "[i18n] created new QTranslator";
+    }
+    QCoreApplication::removeTranslator(m_translator);
+    if (code == QStringLiteral("en")) {
+        if (m_translator->load(QStringLiteral(":/i18n/words-searcher_en.qm"))) {
+            qDebug() << "[i18n] loaded en translation successfully";
+            QCoreApplication::installTranslator(m_translator);
+        } else {
+            qDebug() << "[i18n] FAILED to load en translation from :/i18n/words-searcher_en.qm";
+        }
+    } else {
+        qDebug() << "[i18n] switched to ru (no translation loaded)";
+    }
+    QSettings s;
+    s.setValue(QStringLiteral("language"), code);
+}
+
+
+void MainWindow::retranslateUi()
+{
+    qDebug() << "[i18n] setWindowTitle to" << tr("Искатель слов");
+    setWindowTitle(tr("Искатель слов"));
+    if (windowHandle()) windowHandle()->setTitle(tr("Искатель слов"));
+
+    menuBar()->clear();
+
+    QMenu *searchMenu = menuBar()->addMenu(tr("Поиск"));
+    QAction *actQuit = searchMenu->addAction(tr("Выход"));
+    connect(actQuit, &QAction::triggered, this, &QWidget::close);
+
+    QMenu *viewMenu = menuBar()->addMenu(tr("Вид"));
+    QAction *actRefresh = viewMenu->addAction(tr("Обновить"));
+    actRefresh->setShortcut(QKeySequence(Qt::Key_F5));
+    connect(actRefresh, &QAction::triggered, this, &MainWindow::onRefresh);
+
+    QAction *actHidden = viewMenu->addAction(tr("Показать скрытые"));
+    actHidden->setCheckable(true);
+    connect(actHidden, &QAction::toggled, this, &MainWindow::onToggleHidden);
+
+    viewMenu->addSeparator();
+
+    QAction *actZoomIn = viewMenu->addAction(tr("Увеличить шрифт"));
+    connect(actZoomIn, &QAction::triggered, this, &MainWindow::onZoomIn);
+    QAction *actZoomOut = viewMenu->addAction(tr("Уменьшить шрифт"));
+    connect(actZoomOut, &QAction::triggered, this, &MainWindow::onZoomOut);
+
+    QMenu *helpMenu = menuBar()->addMenu(tr("Справка"));
+    QAction *actSettings = helpMenu->addAction(tr("Настройки…"));
+    connect(actSettings, &QAction::triggered, this, &MainWindow::onSettings);
+
+    helpMenu->addSeparator();
+
+    QAction *actRu = helpMenu->addAction(tr("Русский"));
+    connect(actRu, &QAction::triggered, this, &MainWindow::onLangRu);
+    QAction *actEn = helpMenu->addAction(tr("Английский"));
+    connect(actEn, &QAction::triggered, this, &MainWindow::onLangEn);
+
+    helpMenu->addSeparator();
+
+    QAction *actLight = helpMenu->addAction(tr("Светлая тема"));
+    connect(actLight, &QAction::triggered, this, &MainWindow::onThemeLight);
+    QAction *actDark = helpMenu->addAction(tr("Тёмная тема"));
+    connect(actDark, &QAction::triggered, this, &MainWindow::onThemeDark);
+
+    helpMenu->addSeparator();
+
+    QAction *actAbout = helpMenu->addAction(tr("О программе"));
+    connect(actAbout, &QAction::triggered, this, [this]() {
+        QMessageBox::about(this, tr("О программе"), tr("Искатель слов 0.0.1"));
+    });
+
+    // Восстанавливаем состояние чекбокса скрытых файлов
+    QSettings s;
+    bool showHidden = s.value(QStringLiteral("showHidden"), false).toBool();
+}
+
+void MainWindow::changeEvent(QEvent *e)
+{
+    if (e->type() == QEvent::LanguageChange) {
+        retranslateUi();
+    }
+    QMainWindow::changeEvent(e);
 }
