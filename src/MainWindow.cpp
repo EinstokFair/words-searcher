@@ -360,10 +360,6 @@ void MainWindow::onContextMenu(const QPoint &pos)
         connect(actCopyDir, &QAction::triggered, this, [fi]() {
             QGuiApplication::clipboard()->setText(fi.absolutePath());
         });
-        QAction *actCopyPath = menu.addAction(tr("Копировать полный путь"));
-        connect(actCopyPath, &QAction::triggered, this, [fi]() {
-            QGuiApplication::clipboard()->setText(fi.absoluteFilePath());
-        });
         menu.addSeparator();
         QAction *actDolphin = menu.addAction(tr("Открыть директорию в Dolphin"));
         connect(actDolphin, &QAction::triggered, this, [fi]() {
@@ -401,7 +397,7 @@ void MainWindow::onContextMenu(const QPoint &pos)
         connect(actCopyDir2, &QAction::triggered, this, [fi]() {
             QGuiApplication::clipboard()->setText(fi.absolutePath());
         });
-        QAction *actCopyPath2 = menu.addAction(tr("Копировать полный путь"));
+        QAction *actCopyPath2 = menu.addAction(tr("Копировать путь с именем файла"));
         connect(actCopyPath2, &QAction::triggered, this, [fi]() {
             QGuiApplication::clipboard()->setText(fi.absoluteFilePath());
         });
