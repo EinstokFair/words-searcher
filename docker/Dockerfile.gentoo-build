@@ -5,7 +5,7 @@ RUN emerge-webrsync
 COPY docker/gpkg-drain-stdout.patch /tmp/gpkg-drain-stdout.patch
 RUN cd /usr/lib/python3.14/site-packages/portage && \
     cp gpkg.py gpkg.py.bak && \
-    patch -p1 < /tmp/gpkg-drain-stdout.patch && \
+    patch -p2 < /tmp/gpkg-drain-stdout.patch && \
     rm -f /tmp/gpkg-drain-stdout.patch
 
 FROM sync AS autotools
