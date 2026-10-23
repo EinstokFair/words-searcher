@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 
     // 5. doc/REQUIREMENTS.ru.html: строка версии (обычно 0.0.1)
     {
-        QRegularExpression re(QStringLiteral("^0\\.0\\.1$"), QRegularExpression::MultilineOption);
+        QRegularExpression re(QStringLiteral("^\\d+\\.\\d+\\.\\d+$"), QRegularExpression::MultilineOption);
         replaceInFile(root + "/doc/REQUIREMENTS.ru.html", re, newVersion);
     }
 
