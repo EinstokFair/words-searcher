@@ -11,7 +11,7 @@ RUN emerge-webrsync \
       dev-qt/qttranslations:6 \
       dev-libs/glib \
       dev-libs/gobject-introspection \
-      sys-devel/autoconf \
+      dev-build/autoconf \
       sys-devel/automake \
       sys-devel/libtool \
       dev-build/make \
