@@ -27,6 +27,13 @@ build:gentoo:
       TARBALL=$(awk '/^DIST/ {print $2}' packaging/gentoo/app-misc/words-searcher/Manifest)
       echo "Using tarball: $TARBALL"
       cp "$TARBALL" /var/cache/distfiles/
+      chmod -R 777 /var/cache/distfiles
+      echo "===== SHA256 tarball (в DISTDIR) ====="
+      sha256sum "/var/cache/distfiles/$TARBALL"
+      echo "===== SHA256 tarball (из build:dist) ====="
+      sha256sum "$TARBALL"
+      echo "===== Manifest ====="
+      grep '^DIST' packaging/gentoo/app-misc/words-searcher/Manifest
     - emerge --buildpkg --oneshot app-misc/words-searcher
     - mkdir -p binpkgs
     - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true
