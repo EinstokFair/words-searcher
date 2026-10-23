@@ -18,6 +18,6 @@ make dist
 
 git add -A
 git commit -m "release: $V" || echo "Nothing to commit."
-git tag "$V"
+git tag "v$V"
 
 echo "Релиз $V готов (tarball, Manifest, commit, tag)."
