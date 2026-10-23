@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>einfair@users.noreply.github.com</email>
+		<name>einfair</name>
+	</maintainer>
+	<longdescription>
+		A Qt6-based directory tree viewer with future search functionality.
+	</longdescription>
+	<upstream>
+		<remote-id type="github">EinstokFair/words-searcher</remote-id>
+	</upstream>
+</pkgmetadata>

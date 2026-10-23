@@ -1,0 +1,22 @@
+Source: words-searcher
+Section: utils
+Priority: optional
+Maintainer: einfair <einfair@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13),
+               qt6-base-dev,
+               qt6-base-dev-tools,
+               autoconf,
+               automake,
+               libtool,
+               pkg-config
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: words-searcher
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Directory tree viewer with search planned
+ A Qt6-based directory tree viewer.
+ .
+ Version 0.0.1 provides a directory tree, four columns (Icon, Date, Name,
+ Size), light/dark themes, and font zoom.
