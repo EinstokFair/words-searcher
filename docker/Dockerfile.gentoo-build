@@ -11,7 +11,7 @@ RUN emerge -v --oneshot \
 
 # Слой 3: Qt6
 RUN emerge -v --oneshot \
-      dev-qt/qtbase:6[X,dbus,gui,libinput,network,nls,sql,sqlite,ssl,udev,widgets,xml] \
+      dev-qt/qtbase:6 \
       dev-qt/qttools:6[linguist] \
       dev-qt/qttranslations:6
 
@@ -31,3 +31,4 @@ RUN emerge -v --oneshot \
       dev-util/pkgconf
 
 ENV FEATURES="buildpkg"
+ENV EMERGE_DEFAULT_OPTS="--binpkg-respect-use=n"
