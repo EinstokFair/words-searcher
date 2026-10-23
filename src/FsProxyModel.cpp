@@ -60,3 +60,20 @@ QVariant FsProxyModel::data(const QModelIndex &index, int role) const
     }
     return QVariant();
 }
+
+void FsProxyModel::sort(int column, Qt::SortOrder order)
+{
+    auto *fs = qobject_cast<QFileSystemModel *>(sourceModel());
+    if (!fs) return;
+
+    // Колонки QFileSystemModel: 0 - Name, 1 - Size, 2 - Type, 3 - Date Modified
+    int fsCol = 0;
+    if (column == ColDate) fsCol = 3;
+    else if (column == ColSize) fsCol = 1;
+    else if (column == ColName) fsCol = 0;
+    else if (column == ColIcon) fsCol = 0; // Иконка: сортируем по имени
+
+    fs->sort(fsCol, order);
+    emit layoutChanged();
+}
+

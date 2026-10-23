@@ -14,6 +14,8 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
 
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
+
 private:
     static QString humanSize(qint64 bytes);
 };

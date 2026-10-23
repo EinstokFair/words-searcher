@@ -15,10 +15,19 @@ public:
     void setShowHidden(bool on);
     bool showHidden() const;
 
+    void setEditorPath(const QString &p);
+    QString editorPath() const;
+
+signals:
+    void settingsApplied(const QString &rootPath, bool showHidden);
+
 private slots:
     void onBrowse();
 
 private:
+    bool validateAndApply();
+
     QLineEdit *m_pathEdit = nullptr;
+    QLineEdit *m_editorPathEdit = nullptr;
     QCheckBox *m_hidden = nullptr;
 };

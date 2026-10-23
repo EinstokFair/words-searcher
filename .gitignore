@@ -29,3 +29,7 @@ src/words_searcher-*.o
 
 # артефакты make dist
 *.tar.gz
+
+# бинарник утилиты
+tools/manifest-signer
+tools/.dirstamp

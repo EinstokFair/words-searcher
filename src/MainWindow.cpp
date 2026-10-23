@@ -18,6 +18,8 @@
 #include <QTranslator>
 #include <QEvent>
 #include <QWindow>
+#include <QProcess>
+#include <QDesktopServices>
 #include <QCoreApplication>
 #include <QShortcut>
 #include <QKeySequence>
@@ -81,6 +83,10 @@ void MainWindow::setupModel()
     m_proxy = new FsProxyModel(this);
     m_proxy->setSourceModel(m_fsModel);
     m_tree->setModel(m_proxy);
+    m_tree->setSortingEnabled(true);
+    m_tree->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_tree, &QTreeView::customContextMenuRequested, this, &MainWindow::onContextMenu);
+    m_tree->header()->setSortIndicatorShown(true);
     m_tree->setRootIndex(QModelIndex());
     m_tree->header()->setSectionResizeMode(FsProxyModel::ColIcon, QHeaderView::ResizeToContents);
     m_tree->header()->setSectionResizeMode(FsProxyModel::ColDate, QHeaderView::ResizeToContents);
@@ -109,6 +115,7 @@ void MainWindow::onSettings()
     SettingsDialog dlg(this);
     dlg.setRootPath(s.value(QStringLiteral("rootPath"), QDir::homePath()).toString());
     dlg.setShowHidden(s.value(QStringLiteral("showHidden"), false).toBool());
+    dlg.setEditorPath(s.value(QStringLiteral("editorPath"), QStringLiteral("gedit")).toString());
     if (dlg.exec() == QDialog::Accepted) {
         const QString p = dlg.rootPath();
         QFileInfo fi(p);
@@ -245,21 +252,25 @@ void MainWindow::onLangEn()
 void MainWindow::switchLanguage(const QString &code)
 {
     qDebug() << "[i18n] switchLanguage to" << code;
-    if (!m_translator) {
-        m_translator = new QTranslator(this);
-        qDebug() << "[i18n] created new QTranslator";
-    }
+
+    if (!m_translator) m_translator = new QTranslator(this);
+    if (!m_qtTranslator) m_qtTranslator = new QTranslator(this);
+
+    // Всегда убираем старые переводчики
     QCoreApplication::removeTranslator(m_translator);
+    QCoreApplication::removeTranslator(m_qtTranslator);
+
     if (code == QStringLiteral("en")) {
         if (m_translator->load(QStringLiteral(":/i18n/words-searcher_en.qm"))) {
-            qDebug() << "[i18n] loaded en translation successfully";
             QCoreApplication::installTranslator(m_translator);
-        } else {
-            qDebug() << "[i18n] FAILED to load en translation from :/i18n/words-searcher_en.qm";
         }
-    } else {
-        qDebug() << "[i18n] switched to ru (no translation loaded)";
+    } else if (code == QStringLiteral("ru")) {
+        // Загружаем стандартный перевод Qt для кнопок
+        if (m_qtTranslator->load(QStringLiteral("qtbase_ru"), QStringLiteral("/usr/share/qt6/translations"))) {
+            QCoreApplication::installTranslator(m_qtTranslator);
+        }
     }
+
     QSettings s;
     s.setValue(QStringLiteral("language"), code);
 }
@@ -329,4 +340,42 @@ void MainWindow::changeEvent(QEvent *e)
         retranslateUi();
     }
     QMainWindow::changeEvent(e);
+}
+
+void MainWindow::onContextMenu(const QPoint &pos)
+{
+    QModelIndex index = m_tree->indexAt(pos);
+    if (!index.isValid()) return;
+
+    QFileInfo fi = m_fsModel->fileInfo(m_proxy->mapToSource(index));
+    bool isDir = fi.isDir();
+
+    QMenu menu(this);
+
+    if (isDir) {
+        QAction *actDolphin = menu.addAction(tr("Открыть директорию в Dolphin"));
+        connect(actDolphin, &QAction::triggered, this, [fi]() {
+            QProcess::startDetached("dolphin", {fi.absoluteFilePath()});
+        });
+
+        QAction *actNautilus = menu.addAction(tr("Открыть директорию в Nautilus"));
+        connect(actNautilus, &QAction::triggered, this, [fi]() {
+            QProcess::startDetached("nautilus", {fi.absoluteFilePath()});
+        });
+    } else {
+        QAction *actFirefox = menu.addAction(tr("Открыть файл в Firefox"));
+        connect(actFirefox, &QAction::triggered, this, [fi]() {
+            QProcess::startDetached("firefox", {fi.absoluteFilePath()});
+        });
+
+        QAction *actEditor = menu.addAction(tr("Открыть файл в редакторе"));
+        connect(actEditor, &QAction::triggered, this, [this, fi]() {
+            QSettings s;
+            QString editor = s.value(QStringLiteral("editorPath"), "gedit").toString();
+            if (editor.isEmpty()) editor = "gedit";
+            QProcess::startDetached(editor, {fi.absoluteFilePath()});
+        });
+    }
+
+    menu.exec(m_tree->viewport()->mapToGlobal(pos));
 }

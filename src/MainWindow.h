@@ -20,6 +20,7 @@ private slots:
     void onSettings();
     void onRefresh();
     void onToggleHidden(bool on);
+    void onContextMenu(const QPoint &pos);
     void onZoomIn();
     void onZoomOut();
     void onThemeLight();
@@ -44,6 +45,7 @@ private:
     QFileSystemModel *m_fsModel = nullptr;
     FsProxyModel *m_proxy = nullptr;
     QTranslator *m_translator = nullptr;
+    QTranslator *m_qtTranslator = nullptr;
     int m_fontDelta = 0;
     int m_baseFontPointSize = 0;
 };
