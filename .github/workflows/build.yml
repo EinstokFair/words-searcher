@@ -18,7 +18,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends \
-            build-essential qt6-base-dev qt6-base-dev-tools \
+            build-essential qt6-base-dev qt6-base-dev-tools qt6-translations-l10n \
             autoconf automake libtool pkg-config ca-certificates
 
       - name: Build
