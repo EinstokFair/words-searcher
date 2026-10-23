@@ -1,7 +1,6 @@
 build:gentoo:
   stage: build
-  when: manual
-  image: gentoo/stage3:latest
+  image: ws-gentoo-final:latest
   needs:
     - build:dist
   dependencies:
@@ -14,41 +13,18 @@ build:gentoo:
         - configure.ac
         - .gitlab-ci.yml
         - .gitlab/ci/**/*
-  cache:
-    key: gentoo-portage-repo
-    when: always
-    paths:
-      - .cache/portage
-      - .cache/binhost
-  variables:
-    FEATURES: "buildpkg getbinpkg"
-    ACCEPT_KEYWORDS: "~amd64"
   script:
-    - mkdir -p /etc/portage/binrepos.conf /etc/portage/repos.conf
-    - |
-      cat > /etc/portage/binrepos.conf/gentoo.conf <<'CONF'
-      [gentoo]
-      priority = 1
-      sync-uri = https://distfiles.gentoo.org/releases/amd64/binpackages/23.0/x86-64/
-      location = $CI_PROJECT_DIR/.cache/binhost/gentoo
-      verify-signature = true
-      CONF
+    - mkdir -p /etc/portage/repos.conf /var/cache/distfiles /var/cache/binpkgs
     - |
       cat > /etc/portage/repos.conf/local.conf <<CONF
       [words-searcher]
       location = /builds/${CI_PROJECT_PATH}/packaging/gentoo
       priority = 100
       CONF
-    - mkdir -p /var/cache/binpkgs /var/cache/distfiles
     - |
       TARBALL=$(awk '/^DIST/ {print $2}' packaging/gentoo/app-misc/words-searcher/Manifest)
       echo "Using tarball: $TARBALL"
       cp "$TARBALL" /var/cache/distfiles/
-    - mkdir -p .cache/portage .cache/binhost /var/db/repos /var/cache
-    - rm -rf /var/db/repos/gentoo /var/cache/binhost
-    - ln -s "$CI_PROJECT_DIR/.cache/portage" /var/db/repos/gentoo
-    - ln -s "$CI_PROJECT_DIR/.cache/binhost" /var/cache/binhost
-    - if [ -z "$(ls -A .cache/portage 2>/dev/null)" ]; then emerge-webrsync; fi
     - emerge --buildpkg --oneshot app-misc/words-searcher
     - mkdir -p binpkgs
     - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true
