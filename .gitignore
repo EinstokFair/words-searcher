@@ -40,3 +40,4 @@ src/.dirstamp
 # генерируется из resources.qrc
 qrc_resources.cpp
 tools/bump-version
+*.bak
