@@ -2,20 +2,19 @@ FROM debian:trixie-slim
 
 # Один образ для build:dist и build:debian.
 # Сначала проверить в интерактивном контейнере, потом записывать сюда.
+# apt-get update — только в слое 1; rm -rf /var/lib/apt/lists/* — только в последнем.
 
-# Слой 1: базовые инструменты для make dist
+# Слой 1: базовые инструменты + индексы APT
 RUN apt-get update && apt-get install -y --no-install-recommends \
       build-essential \
       autoconf automake libtool pkg-config \
-      ca-certificates \
- && rm -rf /var/lib/apt/lists/*
+      ca-certificates
 
 # Слой 2: Qt6 для сборки (moc, rcc, lupdate, lrelease)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-      qt6-base-dev qt6-base-dev-tools qt6-l10n-tools \
- && rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y --no-install-recommends \
+      qt6-base-dev qt6-base-dev-tools qt6-l10n-tools
 
 # Слой 3: для dpkg-buildpackage и перевода стандартных кнопок
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get install -y --no-install-recommends \
       qt6-translations-l10n debhelper dpkg-dev \
  && rm -rf /var/lib/apt/lists/*
