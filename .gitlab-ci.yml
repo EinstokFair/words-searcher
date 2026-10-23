@@ -1,6 +1,21 @@
 stages:
   - build
 
+
+build:dist:
+  stage: build
+  image: debian:trixie-slim
+  script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools autoconf automake libtool pkg-config ca-certificates
+    - autoreconf -fi
+    - ./configure
+    - make dist
+  artifacts:
+    paths:
+      - words-searcher-0.0.1.tar.gz
+    expire_in: 1 week
+
 include:
   - local: '.gitlab/ci/gentoo.yml'
 
