@@ -1,9 +1,19 @@
 stages:
   - build
 
+include:
+  - local: '.gitlab/ci/gentoo.yml'
+
 build:debian:
   stage: build
-  tags: []
+  image: debian:trixie-slim
+  rules:
+    - changes:
+        - src/**/*
+        - Makefile.am
+        - configure.ac
+        - .gitlab-ci.yml
+        - .gitlab/ci/debian.yml
   script:
     - apt-get update
     - apt-get install -y --no-install-recommends build-essential qt6-base-dev qt6-base-dev-tools autoconf automake libtool pkg-config ca-certificates

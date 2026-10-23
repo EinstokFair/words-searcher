@@ -1,0 +1,25 @@
+build:gentoo:
+  stage: build
+  image: gentoo/stage3-amd64
+  rules:
+    - changes:
+        - packaging/gentoo/**/*
+        - src/**/*
+        - Makefile.am
+        - configure.ac
+  script:
+    - mkdir -p /etc/portage/repos.conf
+    - |
+      cat > /etc/portage/repos.conf/local.conf <<CONF
+      [words-searcher]
+      location = /builds/${CI_PROJECT_PATH}/packaging/gentoo
+      priority = 100
+      CONF
+    - mkdir -p /var/cache/binpkgs
+    - emerge --sync || true
+    - emerge --buildpkg --oneshot app-misc/words-searcher
+  artifacts:
+    paths:
+      - /var/cache/binpkgs/*.gpkg.tar
+      - /var/cache/binpkgs/*.tbz2
+    expire_in: 1 week
