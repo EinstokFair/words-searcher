@@ -16,8 +16,14 @@ RUN emerge -v --getbinpkgonly --oneshot \
       dev-build/libtool
 
 FROM autotools AS qt
-# Стадия 3: Qt6 (без явных USE; binhost берётся независимо от USE)
-RUN emerge -v --getbinpkgonly --oneshot \
+
+# USE: qtbase -gtk (рвём gtk+ -> at-spi2-core -> libXtst -> libXi[abi_x86_32]);
+# libxkbcommon X — совпасть с binhost при --binpkg-respect-use=y
+RUN mkdir -p /etc/portage/package.use \
+ && printf "dev-qt/qtbase -gtk\nx11-libs/libxkbcommon X\n" > /etc/portage/package.use/qtbase
+
+# Стадия 3: Qt6. --binpkg-respect-use=y — сверять USE с binhost (иначе берётся qtbase с gtk)
+RUN emerge -v --binpkg-respect-use=y --getbinpkgonly --oneshot \
       dev-qt/qtbase:6 \
       dev-qt/qttools:6[linguist] \
       dev-qt/qttranslations:6
