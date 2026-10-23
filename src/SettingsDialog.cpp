@@ -11,21 +11,21 @@
 SettingsDialog::SettingsDialog(QWidget *parent)
     : QDialog(parent)
 {
-    setWindowTitle(QStringLiteral("Настройки"));
+    setWindowTitle(tr("Настройки"));
     setModal(true);
 
     m_pathEdit = new QLineEdit(this);
-    auto *browse = new QPushButton(QStringLiteral("Обзор…"), this);
+    auto *browse = new QPushButton(tr("Обзор…"), this);
     connect(browse, &QPushButton::clicked, this, &SettingsDialog::onBrowse);
 
     auto *pathRow = new QHBoxLayout;
     pathRow->addWidget(m_pathEdit, 1);
     pathRow->addWidget(browse);
 
-    m_hidden = new QCheckBox(QStringLiteral("Показывать скрытые"), this);
+    m_hidden = new QCheckBox(tr("Показывать скрытые"), this);
 
     auto *form = new QFormLayout;
-    form->addRow(QStringLiteral("Корневая директория:"), pathRow);
+    form->addRow(tr("Корневая директория:"), pathRow);
     form->addRow(QString(), m_hidden);
 
     auto *buttons = new QDialogButtonBox(
@@ -49,7 +49,7 @@ bool SettingsDialog::showHidden() const { return m_hidden->isChecked(); }
 void SettingsDialog::onBrowse()
 {
     const QString p = QFileDialog::getExistingDirectory(
-        this, QStringLiteral("Выбор корневой директории"), m_pathEdit->text());
+        this, tr("Выбор корневой директории"), m_pathEdit->text());
     if (!p.isEmpty())
         m_pathEdit->setText(p);
 }

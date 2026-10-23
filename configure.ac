@@ -27,5 +27,18 @@ if test "x$MOC" = "xno" || test -z "$MOC"; then
 fi
 AC_MSG_NOTICE([using moc: $MOC])
 
+
+# Проверка инструментов локализации
+AC_ARG_VAR([LUPDATE], [Qt6 lupdate compiler])
+AS_IF([test -z "$LUPDATE"], [AC_PATH_PROG([LUPDATE], [lupdate-qt6], [no])])
+AS_IF([test "x$LUPDATE" = "xno"], [AC_PATH_PROG([LUPDATE], [lupdate], [no])])
+# В Debian trixie прямой бинарник Qt6 лежит в /usr/lib/qt6/bin
+AS_IF([test "x$LUPDATE" = "xno" -a -x /usr/lib/qt6/bin/lupdate], [LUPDATE=/usr/lib/qt6/bin/lupdate])
+AC_ARG_VAR([LRELEASE], [Qt6 lrelease compiler])
+AS_IF([test -z "$LRELEASE"], [AC_PATH_PROG([LRELEASE], [lrelease-qt6], [no])])
+AS_IF([test "x$LRELEASE" = "xno"], [AC_PATH_PROG([LRELEASE], [lrelease], [no])])
+# В Debian trixie прямой бинарник Qt6 лежит в /usr/lib/qt6/bin
+AS_IF([test "x$LRELEASE" = "xno" -a -x /usr/lib/qt6/bin/lrelease], [LRELEASE=/usr/lib/qt6/bin/lrelease])
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

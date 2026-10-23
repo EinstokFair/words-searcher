@@ -4,6 +4,7 @@ bin_PROGRAMS = words-searcher
 
 words_searcher_SOURCES = \
     src/main.cpp \
+    resources.qrc \
     src/MainWindow.cpp \
     src/MainWindow.h \
     src/SettingsDialog.cpp \
@@ -27,3 +28,9 @@ src/moc_%.cpp: src/%.h
 	$(MOC) $< -o $@
 
 EXTRA_DIST = COPYING README.en.md
+
+translations/words-searcher_en.qm: translations/words-searcher_en.ts
+	$(LRELEASE) $< -qm $@
+
+BUILT_SOURCES += translations/words-searcher_en.qm
+CLEANFILES += translations/words-searcher_en.qm

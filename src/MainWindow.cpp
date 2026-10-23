@@ -21,7 +21,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle(QStringLiteral("words-searcher"));
+    setWindowTitle(tr("words-searcher"));
     {
         QFont f0 = QApplication::font();
         m_baseFontPointSize = f0.pointSize() > 0 ? f0.pointSize() : 10;
@@ -33,36 +33,36 @@ MainWindow::MainWindow(QWidget *parent)
     m_tree->setAlternatingRowColors(true);
     setCentralWidget(m_tree);
 
-    QMenu *searchMenu = menuBar()->addMenu(QStringLiteral("Поиск"));
-    QAction *actQuit = searchMenu->addAction(QStringLiteral("Выход"));
+    QMenu *searchMenu = menuBar()->addMenu(tr("Поиск"));
+    QAction *actQuit = searchMenu->addAction(tr("Выход"));
     connect(actQuit, &QAction::triggered, this, &QWidget::close);
 
-    QMenu *viewMenu = menuBar()->addMenu(QStringLiteral("Вид"));
-    QAction *actZoomIn = viewMenu->addAction(QStringLiteral("Увеличить шрифт"));
+    QMenu *viewMenu = menuBar()->addMenu(tr("Вид"));
+    QAction *actZoomIn = viewMenu->addAction(tr("Увеличить шрифт"));
     connect(actZoomIn, &QAction::triggered, this, &MainWindow::onZoomIn);
-    QAction *actZoomOut = viewMenu->addAction(QStringLiteral("Уменьшить шрифт"));
+    QAction *actZoomOut = viewMenu->addAction(tr("Уменьшить шрифт"));
     connect(actZoomOut, &QAction::triggered, this, &MainWindow::onZoomOut);
     viewMenu->addSeparator();
-    QAction *actRefresh = viewMenu->addAction(QStringLiteral("Обновить"));
+    QAction *actRefresh = viewMenu->addAction(tr("Обновить"));
     actRefresh->setShortcut(QKeySequence(Qt::Key_F5));
     connect(actRefresh, &QAction::triggered, this, &MainWindow::onRefresh);
-    QAction *actHidden = viewMenu->addAction(QStringLiteral("Показать скрытые"));
+    QAction *actHidden = viewMenu->addAction(tr("Показать скрытые"));
     actHidden->setCheckable(true);
     connect(actHidden, &QAction::toggled, this, &MainWindow::onToggleHidden);
 
-    QMenu *helpMenu = menuBar()->addMenu(QStringLiteral("Справка"));
-    QAction *actSettings = helpMenu->addAction(QStringLiteral("Настройки…"));
+    QMenu *helpMenu = menuBar()->addMenu(tr("Справка"));
+    QAction *actSettings = helpMenu->addAction(tr("Настройки…"));
     connect(actSettings, &QAction::triggered, this, &MainWindow::onSettings);
     helpMenu->addSeparator();
-    QAction *actLight = helpMenu->addAction(QStringLiteral("Светлая тема"));
+    QAction *actLight = helpMenu->addAction(tr("Светлая тема"));
     connect(actLight, &QAction::triggered, this, &MainWindow::onThemeLight);
-    QAction *actDark = helpMenu->addAction(QStringLiteral("Тёмная тема"));
+    QAction *actDark = helpMenu->addAction(tr("Тёмная тема"));
     connect(actDark, &QAction::triggered, this, &MainWindow::onThemeDark);
     helpMenu->addSeparator();
-    QAction *actAbout = helpMenu->addAction(QStringLiteral("О программе"));
+    QAction *actAbout = helpMenu->addAction(tr("О программе"));
     connect(actAbout, &QAction::triggered, this, [this]() {
-        QMessageBox::about(this, QStringLiteral("О программе"),
-                           QStringLiteral("words-searcher 0.0.1"));
+        QMessageBox::about(this, tr("О программе"),
+                           tr("words-searcher 0.0.1"));
     });
 
     setupModel();
@@ -114,14 +114,14 @@ void MainWindow::applyRoot(const QString &path)
 {
     QFileInfo fi(path);
     if (!fi.exists() || !fi.isDir() || !fi.isReadable()) {
-        QMessageBox::warning(this, QStringLiteral("Ошибка"),
-                             QStringLiteral("Путь недоступен для чтения: %1").arg(path));
-        statusBar()->showMessage(QStringLiteral("Ошибка: путь недоступен: %1").arg(path));
+        QMessageBox::warning(this, tr("Ошибка"),
+                             tr("Путь недоступен для чтения: %1").arg(path));
+        statusBar()->showMessage(tr("Ошибка: путь недоступен: %1").arg(path));
         return;
     }
     const QModelIndex idx = m_fsModel->setRootPath(path);
     m_tree->setRootIndex(m_proxy->mapFromSource(idx));
-    statusBar()->showMessage(QStringLiteral("Корень: %1").arg(path));
+    statusBar()->showMessage(tr("Корень: %1").arg(path));
 }
 
 void MainWindow::onSettings()
