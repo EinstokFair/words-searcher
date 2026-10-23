@@ -1,21 +1,31 @@
 FROM gentoo/stage3:latest
 
-# Дерево Portage и зависимости ebuild — один раз при сборке образа.
-RUN mkdir -p /etc/portage/package.use \
- && printf "dev-libs/gobject-introspection -doctool -gtk-doc -test\n" \
-      > /etc/portage/package.use/gobject-introspection
-RUN emerge-webrsync \
- && emerge -v --oneshot \
-      dev-qt/qtbase:6[X,dbus,gui,libinput,network,nls,sql,sqlite,ssl,udev,widgets,xml] \
-      dev-qt/qttools:6[linguist] \
-      dev-qt/qttranslations:6 \
-      dev-libs/glib \
-      dev-libs/gobject-introspection \
+# Слой 1: синхронизация дерева (один раз, кэшируется)
+RUN emerge-webrsync
+
+# Слой 2: Autotools
+RUN emerge -v --oneshot \
       dev-build/autoconf \
       dev-build/automake \
-      dev-build/libtool \
+      dev-build/libtool
+
+# Слой 3: Qt6
+RUN emerge -v --oneshot \
+      dev-qt/qtbase:6[X,dbus,gui,libinput,network,nls,sql,sqlite,ssl,udev,widgets,xml] \
+      dev-qt/qttools:6[linguist] \
+      dev-qt/qttranslations:6
+
+# Слой 4: glib / gobject-introspection
+RUN emerge -v --oneshot \
+      dev-libs/glib \
+      dev-libs/gobject-introspection
+
+# Слой 5: остальное
+RUN emerge -v --oneshot \
       dev-build/make \
-      dev-util/pkgconf \
- && rm -rf /var/db/repos/gentoo/.git /var/cache/distfiles/*
+      dev-util/pkgconf
+
+# USE для gobject-introspection — до emerge (слой 4). Перенесено в начало:
+# (см. комментарий: package.use должен быть создан до emerge gobject-introspection)
 
 ENV FEATURES="buildpkg"
