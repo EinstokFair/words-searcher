@@ -20,6 +20,7 @@ build:gentoo:
       - .cache/portage
   variables:
     FEATURES: "buildpkg"
+    ACCEPT_KEYWORDS: "~amd64"
   script:
     - mkdir -p /etc/portage/repos.conf
     - |
