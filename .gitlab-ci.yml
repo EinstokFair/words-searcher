@@ -5,6 +5,7 @@ stages:
 build:dist:
   stage: build
   image: words-searcher-debian-build:latest
+  pull_policy: if-not-present
   variables:
     SOURCE_DATE_EPOCH: "0"
   script:
@@ -22,6 +23,7 @@ include:
 build:debian:
   stage: build
   image: words-searcher-debian-build:latest
+  pull_policy: if-not-present
   needs:
     - build:dist
   dependencies:
