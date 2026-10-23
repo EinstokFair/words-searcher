@@ -355,18 +355,16 @@ void MainWindow::onContextMenu(const QPoint &pos)
 
     QMenu menu(this);
 
-    // Копирование — общее для файла и каталога
-    QAction *actCopyDir = menu.addAction(tr("Копировать каталог"));
-    connect(actCopyDir, &QAction::triggered, this, [fi]() {
-        QGuiApplication::clipboard()->setText(fi.absolutePath());
-    });
-    QAction *actCopyPath = menu.addAction(tr("Копировать полный путь"));
-    connect(actCopyPath, &QAction::triggered, this, [fi]() {
-        QGuiApplication::clipboard()->setText(fi.absoluteFilePath());
-    });
-    menu.addSeparator();
-
     if (isDir) {
+        QAction *actCopyDir = menu.addAction(tr("Копировать каталог"));
+        connect(actCopyDir, &QAction::triggered, this, [fi]() {
+            QGuiApplication::clipboard()->setText(fi.absolutePath());
+        });
+        QAction *actCopyPath = menu.addAction(tr("Копировать полный путь"));
+        connect(actCopyPath, &QAction::triggered, this, [fi]() {
+            QGuiApplication::clipboard()->setText(fi.absoluteFilePath());
+        });
+        menu.addSeparator();
         QAction *actDolphin = menu.addAction(tr("Открыть директорию в Dolphin"));
         connect(actDolphin, &QAction::triggered, this, [fi]() {
             QProcess::startDetached("dolphin", {fi.absoluteFilePath()});
@@ -399,6 +397,15 @@ void MainWindow::onContextMenu(const QPoint &pos)
             editorsAdded = true;
         }
         if (editorsAdded) menu.addSeparator();
+        QAction *actCopyDir2 = menu.addAction(tr("Копировать каталог"));
+        connect(actCopyDir2, &QAction::triggered, this, [fi]() {
+            QGuiApplication::clipboard()->setText(fi.absolutePath());
+        });
+        QAction *actCopyPath2 = menu.addAction(tr("Копировать полный путь"));
+        connect(actCopyPath2, &QAction::triggered, this, [fi]() {
+            QGuiApplication::clipboard()->setText(fi.absoluteFilePath());
+        });
+        menu.addSeparator();
         QAction *actFirefox = menu.addAction(tr("Открыть файл в Firefox"));
         connect(actFirefox, &QAction::triggered, this, [fi]() {
             QProcess::startDetached("firefox", {fi.absoluteFilePath()});
