@@ -1,0 +1,19 @@
+--- a/portage/gpkg.py
++++ b/portage/gpkg.py
+@@ -376,6 +376,16 @@ class tar_stream_reader:
+         self.closed = True
+ 
+         if self.proc is not None:
++            # Drain remaining stdout to unblock the decompressor's write()
++            # on its stdin pipe. Without this, join() below deadlocks when
++            # the decompressor writes more data (padding) than tarfile reads.
++            try:
++                while True:
++                    chunk = self.proc.stdout.read(65536)
++                    if not chunk:
++                        break
++            except (OSError, ValueError):
++                pass
+             self.thread.join()
+             try:
+                 if self.proc.wait() != os.EX_OK:

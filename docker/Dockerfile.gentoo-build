@@ -1,7 +1,12 @@
 FROM gentoo/stage3:latest AS sync
 
-# Стадия 1: дерево Portage (кэшируется, не пересобирается при падении следующих стадий)
+# Стадия 1: дерево Portage + патч gpkg (deadlock xz-gpkg, bug 983992/984140)
 RUN emerge-webrsync
+COPY docker/gpkg-drain-stdout.patch /tmp/gpkg-drain-stdout.patch
+RUN cd /usr/lib/python3.14/site-packages/portage && \
+    cp gpkg.py gpkg.py.bak && \
+    patch -p1 < /tmp/gpkg-drain-stdout.patch && \
+    rm -f /tmp/gpkg-drain-stdout.patch
 
 FROM sync AS autotools
 # Стадия 2: Autotools
