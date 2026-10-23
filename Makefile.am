@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-bin_PROGRAMS = words-searcher
+bin_PROGRAMS = words-searcher tools/manifest-signer
 
 words_searcher_SOURCES = \
     src/main.cpp \
@@ -40,3 +40,8 @@ qrc_resources.cpp: resources.qrc translations/words-searcher_en.qm
 
 BUILT_SOURCES += qrc_resources.cpp
 CLEANFILES += qrc_resources.cpp
+
+tools_manifest_signer_SOURCES = tools/manifest-signer.cpp
+tools_manifest_signer_CPPFLAGS = $(QT6_CFLAGS)
+tools_manifest_signer_CXXFLAGS = -std=c++17
+tools_manifest_signer_LDADD = $(QT6_LIBS)

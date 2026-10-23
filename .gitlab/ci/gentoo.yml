@@ -29,7 +29,6 @@ build:gentoo:
     - mkdir -p /var/cache/distfiles
     - cp words-searcher-0.0.1.tar.gz /var/cache/distfiles/
     # Генерируем Manifest
-    - ebuild app-misc/words-searcher/words-searcher-0.1.ebuild manifest
     # Собираем с сохранением вывода в файл
     - (emerge --buildpkg --oneshot app-misc/words-searcher > /tmp/emerge.log 2>&1 || (tail -n 50 /tmp/emerge.log && false))
     - mkdir -p binpkgs
