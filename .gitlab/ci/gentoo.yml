@@ -9,6 +9,8 @@ build:gentoo:
         - src/**/*
         - Makefile.am
         - configure.ac
+        - .gitlab-ci.yml
+        - .gitlab/ci/**/*
   cache:
     key: gentoo-portage-repo
     paths:
