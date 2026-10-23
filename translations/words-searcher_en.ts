@@ -107,33 +107,36 @@
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="359"/>
-        <location filename="../src/MainWindow.cpp" line="400"/>
+        <location filename="../src/MainWindow.cpp" line="396"/>
         <source>Копировать каталог</source>
         <translation>Copy directory</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="363"/>
-        <location filename="../src/MainWindow.cpp" line="404"/>
         <source>Копировать полный путь</source>
-        <translation>Copy full path</translation>
+        <translation type="vanished">Copy full path</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="368"/>
+        <location filename="../src/MainWindow.cpp" line="364"/>
         <source>Открыть директорию в Dolphin</source>
         <translation>Open directory in Dolphin</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="372"/>
+        <location filename="../src/MainWindow.cpp" line="368"/>
         <source>Открыть директорию в Nautilus</source>
         <translation>Open directory in Nautilus</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="386"/>
+        <location filename="../src/MainWindow.cpp" line="382"/>
         <source>Открыть в %1</source>
         <translation>Open in %1</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="409"/>
+        <location filename="../src/MainWindow.cpp" line="400"/>
+        <source>Копировать путь с именем файла</source>
+        <translation>Copy path with file name</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="405"/>
         <source>Открыть файл в Firefox</source>
         <translation>Open file in Firefox</translation>
     </message>
