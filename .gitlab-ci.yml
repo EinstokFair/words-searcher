@@ -1,0 +1,13 @@
+stages:
+  - build
+
+build:debian:
+  stage: build
+  tags: []
+  script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends build-essential qt6-base-dev qt6-base-dev-tools autoconf automake libtool pkg-config ca-certificates
+    - autoreconf -fi
+    - ./configure
+    - make -j"$(nproc)"
+    - QT_QPA_PLATFORM=offscreen timeout 5 ./words-searcher || test $? -eq 124
