@@ -1,0 +1,21 @@
+FROM gentoo/stage3:latest
+
+# Дерево Portage и зависимости ebuild — один раз при сборке образа.
+RUN mkdir -p /etc/portage/package.use \
+ && printf "dev-libs/gobject-introspection -doctool -gtk-doc -test\n" \
+      > /etc/portage/package.use/gobject-introspection
+RUN emerge --sync \
+ && emerge -v --oneshot \
+      dev-qt/qtbase:6[X,dbus,gui,libinput,network,nls,sql,sqlite,ssl,udev,widgets,xml] \
+      dev-qt/qttools:6[linguist] \
+      dev-qt/qttranslations:6 \
+      dev-libs/glib \
+      dev-libs/gobject-introspection \
+      sys-devel/autoconf \
+      sys-devel/automake \
+      sys-devel/libtool \
+      dev-build/make \
+      dev-util/pkgconf \
+ && rm -rf /var/db/repos/gentoo/.git /var/cache/distfiles/*
+
+ENV FEATURES="buildpkg"
