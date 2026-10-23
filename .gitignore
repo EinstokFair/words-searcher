@@ -26,3 +26,6 @@ src/words_searcher-*.o
 
 # Прочее
 *~
+
+# временный документ сборки
+BUILD.ru.html
