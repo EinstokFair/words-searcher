@@ -1,0 +1,6 @@
+services:
+  debian-build:
+    build:
+      context: .
+      dockerfile: Dockerfile.debian-build
+    image: words-searcher-debian-build:latest
