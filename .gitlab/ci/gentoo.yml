@@ -22,9 +22,15 @@ build:gentoo:
       priority = 100
       CONF
     - mkdir -p /var/cache/binpkgs
-    # Используем webrsync (сжатый снапшот, меньше вывода), чем rsync
+    # Синхронизация дерева Portage
     - emerge-webrsync || true
-    # Собираем с сохранением вывода в файл, чтобы показать только ошибку при падении
+    # Собираем tarball прямо в CI
+    - autoreconf -fi && ./configure && make dist
+    - mkdir -p /var/cache/distfiles
+    - cp words-searcher-0.0.1.tar.gz /var/cache/distfiles/
+    # Генерируем Manifest
+    - ebuild app-misc/words-searcher/words-searcher-0.1.ebuild manifest
+    # Собираем с сохранением вывода в файл
     - (emerge --buildpkg --oneshot app-misc/words-searcher > /tmp/emerge.log 2>&1 || (tail -n 50 /tmp/emerge.log && false))
     - mkdir -p binpkgs
     - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true
