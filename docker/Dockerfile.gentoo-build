@@ -1,31 +1,33 @@
-FROM gentoo/stage3:latest
+FROM gentoo/stage3:latest AS sync
 
-# Слой 1: синхронизация дерева (один раз, кэшируется)
+# Стадия 1: дерево Portage (кэшируется, не пересобирается при падении следующих стадий)
 RUN emerge-webrsync
 
-# Слой 2: Autotools
+FROM sync AS autotools
+# Стадия 2: Autotools
 RUN emerge -v --getbinpkgonly --oneshot \
       dev-build/autoconf \
       dev-build/automake \
       dev-build/libtool
 
-# Слой 3: Qt6
+FROM autotools AS qt
+# Стадия 3: Qt6 (без явных USE; binhost берётся независимо от USE)
 RUN emerge -v --getbinpkgonly --oneshot \
       dev-qt/qtbase:6 \
       dev-qt/qttools:6[linguist] \
       dev-qt/qttranslations:6
 
-# USE для gobject-introspection — до слоя 4
+FROM qt AS glib
+# Стадия 4: glib / gobject-introspection (USE до emerge)
 RUN mkdir -p /etc/portage/package.use \
  && printf "dev-libs/gobject-introspection -doctool -gtk-doc -test\n" \
       > /etc/portage/package.use/gobject-introspection
-
-# Слой 4: glib / gobject-introspection
 RUN emerge -v --getbinpkgonly --oneshot \
       dev-libs/glib \
       dev-libs/gobject-introspection
 
-# Слой 5: остальное
+FROM glib AS final
+# Стадия 5: остальное
 RUN emerge -v --getbinpkgonly --oneshot \
       dev-build/make \
       dev-util/pkgconf
