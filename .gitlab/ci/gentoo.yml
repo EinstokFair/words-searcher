@@ -19,10 +19,18 @@ build:gentoo:
     paths:
       - .cache/portage
   variables:
-    FEATURES: "buildpkg"
+    FEATURES: "buildpkg getbinpkg"
     ACCEPT_KEYWORDS: "~amd64"
   script:
-    - mkdir -p /etc/portage/repos.conf
+    - mkdir -p /etc/portage/binrepos.conf /etc/portage/repos.conf
+    - |
+      cat > /etc/portage/binrepos.conf/gentoo.conf <<'CONF'
+      [gentoo]
+      priority = 1
+      sync-uri = https://distfiles.gentoo.org/releases/amd64/binpackages/23.0/x86-64/
+      location = /var/cache/binhost/gentoo
+      verify-signature = true
+      CONF
     - |
       cat > /etc/portage/repos.conf/local.conf <<CONF
       [words-searcher]
