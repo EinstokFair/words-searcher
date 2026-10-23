@@ -5,6 +5,8 @@ stages:
 build:dist:
   stage: build
   image: debian:trixie-slim
+  variables:
+    SOURCE_DATE_EPOCH: "0"
   script:
     - apt-get update
     - apt-get install -y --no-install-recommends build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools autoconf automake libtool pkg-config ca-certificates

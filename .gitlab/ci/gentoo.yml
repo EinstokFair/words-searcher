@@ -28,8 +28,7 @@ build:gentoo:
     - cp words-searcher-0.0.1.tar.gz /var/cache/distfiles/
     # Синхронизация дерева Portage
     - emerge-webrsync || true
-    # Генерируем Manifest (или используем готовый, если он в репозитории)
-    - ebuild app-misc/words-searcher/words-searcher-0.1.ebuild manifest
+    # Используем Manifest из репозитория; если хэши не совпадут — emerge упадёт (это ошибка сборки)
     # Собираем пакет (зависимости подтянутся из ebuild)
     - emerge --buildpkg --oneshot app-misc/words-searcher
     - mkdir -p binpkgs
