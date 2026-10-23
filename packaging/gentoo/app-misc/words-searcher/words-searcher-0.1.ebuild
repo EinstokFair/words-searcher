@@ -4,7 +4,7 @@ inherit autotools
 
 DESCRIPTION="Directory tree viewer with search planned"
 HOMEPAGE="https://github.com/EinstokFair/words-searcher"
-SRC_URI="https://github.com/EinstokFair/words-searcher/archive/v${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="file://${FILESDIR}/words-searcher-0.0.1.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
