@@ -15,8 +15,9 @@ build:gentoo:
         - .gitlab/ci/**/*
   cache:
     key: gentoo-portage-repo
+    when: always
     paths:
-      - /var/db/repos/gentoo
+      - .cache/portage
   variables:
     FEATURES: "buildpkg"
   script:
@@ -32,7 +33,10 @@ build:gentoo:
       TARBALL=$(awk '/^DIST/ {print $2}' packaging/gentoo/app-misc/words-searcher/Manifest)
       echo "Using tarball: $TARBALL"
       cp "$TARBALL" /var/cache/distfiles/
-    - emerge-webrsync || true
+    - mkdir -p .cache/portage /var/db/repos
+    - rm -rf /var/db/repos/gentoo
+    - ln -s "$CI_PROJECT_DIR/.cache/portage" /var/db/repos/gentoo
+    - if [ -z "$(ls -A .cache/portage 2>/dev/null)" ]; then emerge-webrsync; fi
     - emerge --buildpkg --oneshot app-misc/words-searcher
     - mkdir -p binpkgs
     - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true

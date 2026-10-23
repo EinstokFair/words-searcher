@@ -31,16 +31,18 @@ build:debian:
   script:
     - apt-get update
     - apt-get install -y --no-install-recommends build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools qt6-translations-l10n autoconf automake libtool pkg-config ca-certificates debhelper dpkg-dev
-    # Распаковываем tarball из артефакта
-    - tar xzf words-searcher-0.0.1.tar.gz
-    - cd words-searcher-0.0.1
+    # Распаковываем tarball из артефакта (версия — из имени файла)
+    - TARBALL=$(basename words-searcher-*.tar.gz)
+    - DIR=${TARBALL%.tar.gz}
+    - tar xzf "$TARBALL"
+    - cd "$DIR"
     # Копируем debian/ из репозитория (он лежит в packaging/debian)
     - cp -r ../packaging/debian debian
     # Собираем .deb
     - dpkg-buildpackage -us -uc -b
     # Smoke-тест (опционально)
     - cd ..
-    - QT_QPA_PLATFORM=offscreen timeout 5 ./words-searcher-0.0.1/words-searcher || test $? -eq 124
+    - QT_QPA_PLATFORM=offscreen timeout 5 "./$DIR/words-searcher" || test $? -eq 124
   artifacts:
     paths:
       - ./*.deb
