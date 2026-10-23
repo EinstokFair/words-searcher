@@ -1,5 +1,6 @@
 build:gentoo:
   stage: build
+  when: manual
   image: gentoo/stage3:latest
   needs:
     - build:dist
