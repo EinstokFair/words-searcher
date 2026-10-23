@@ -37,3 +37,6 @@ tools/.dirstamp
 # Autotools: сгенерированные файлы
 /m4/
 src/.dirstamp
+# генерируется из resources.qrc
+qrc_resources.cpp
+tools/bump-version
