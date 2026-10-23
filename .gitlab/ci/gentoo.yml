@@ -1,6 +1,8 @@
 build:gentoo:
   stage: build
   image: gentoo/stage3:latest
+  needs:
+    - build:dist
   dependencies:
     - build:dist
   rules:
