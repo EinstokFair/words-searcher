@@ -23,7 +23,7 @@ Local build:
 
 ## Status
 
-Version 0.0.3 — skeleton: displays directory tree, four columns (Icon, Date, Name, Size), light/dark themes, font zoom.
+Version 0.0.4 — skeleton: displays directory tree, four columns (Icon, Date, Name, Size), light/dark themes, font zoom.
 
 ## License
 
