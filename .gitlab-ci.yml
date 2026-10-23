@@ -15,7 +15,7 @@ build:dist:
     - make dist
   artifacts:
     paths:
-      - words-searcher-0.0.1.tar.gz
+      - words-searcher-*.tar.gz
     expire_in: 1 week
 
 include:
