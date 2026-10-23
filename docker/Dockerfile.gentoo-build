@@ -4,7 +4,7 @@ FROM gentoo/stage3:latest
 RUN mkdir -p /etc/portage/package.use \
  && printf "dev-libs/gobject-introspection -doctool -gtk-doc -test\n" \
       > /etc/portage/package.use/gobject-introspection
-RUN emerge --sync \
+RUN emerge-webrsync \
  && emerge -v --oneshot \
       dev-qt/qtbase:6[X,dbus,gui,libinput,network,nls,sql,sqlite,ssl,udev,widgets,xml] \
       dev-qt/qttools:6[linguist] \
