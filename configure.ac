@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([words-searcher], [0.0.1], [])
+AC_INIT([words-searcher], [0.0.3], [])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])

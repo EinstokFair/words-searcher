@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-bin_PROGRAMS = words-searcher tools/manifest-signer
+bin_PROGRAMS = words-searcher tools/manifest-signer tools/bump-version
 
 words_searcher_SOURCES = \
     src/main.cpp \
@@ -45,3 +45,7 @@ tools_manifest_signer_SOURCES = tools/manifest-signer.cpp
 tools_manifest_signer_CPPFLAGS = $(QT6_CFLAGS)
 tools_manifest_signer_CXXFLAGS = -std=c++17
 tools_manifest_signer_LDADD = $(QT6_LIBS)
+tools_bump_version_SOURCES = tools/bump-version.cpp
+tools_bump_version_CPPFLAGS = $(QT6_CFLAGS)
+tools_bump_version_CXXFLAGS = -std=c++17
+tools_bump_version_LDADD = $(QT6_LIBS)
