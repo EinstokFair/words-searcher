@@ -33,3 +33,7 @@ src/words_searcher-*.o
 # бинарник утилиты
 tools/manifest-signer
 tools/.dirstamp
+
+# Autotools: сгенерированные файлы
+/m4/
+src/.dirstamp
