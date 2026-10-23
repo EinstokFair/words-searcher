@@ -24,13 +24,11 @@ build:gentoo:
       priority = 100
       CONF
     - mkdir -p /var/cache/binpkgs /var/cache/distfiles
-    # Берём имя архива из Manifest (он всегда соответствует версии)
-    - TARBALL=$(awk '/^DIST/ {print $2}' packaging/gentoo/app-misc/words-searcher/Manifest)
-    - echo "Using tarball: $TARBALL"
-    - cp "$TARBALL" /var/cache/distfiles/
-    # Синхронизация дерева Portage
+    - |
+      TARBALL=$(awk '/^DIST/ {print $2}' packaging/gentoo/app-misc/words-searcher/Manifest)
+      echo "Using tarball: $TARBALL"
+      cp "$TARBALL" /var/cache/distfiles/
     - emerge-webrsync || true
-    # Собираем пакет (Manifest уже в репозитории)
     - emerge --buildpkg --oneshot app-misc/words-searcher
     - mkdir -p binpkgs
     - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true
