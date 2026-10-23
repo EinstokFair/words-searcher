@@ -367,12 +367,20 @@ void MainWindow::onContextMenu(const QPoint &pos)
         QStringList editorList = s.value(QStringLiteral("editorList"), QStringList()).toStringList();
 
         for (const QString &entry : editorList) {
-            const int sep = entry.indexOf('|');
-            QString name = (sep >= 0) ? entry.left(sep) : QFileInfo(entry).fileName();
-            QString path = (sep >= 0) ? entry.mid(sep + 1) : entry;
+            const QStringList parts = entry.split('|');
+            QString name = parts.size() > 0 ? parts[0] : QFileInfo(entry).fileName();
+            QString path = parts.size() > 1 ? parts[1] : entry;
+            QString tmpl = parts.size() > 2 ? parts[2] : QStringLiteral("$FILE_PATH");
             QAction *act = menu.addAction(tr("Открыть в %1").arg(name));
-            connect(act, &QAction::triggered, this, [path, fi]() {
-                QProcess::startDetached(path, {fi.absoluteFilePath()});
+            connect(act, &QAction::triggered, this, [this, path, tmpl, fi]() {
+                QSettings s;
+                QString lang = s.value(QStringLiteral("language"), QStringLiteral("ru")).toString();
+                int fontSize = s.value(QStringLiteral("fontDelta"), 0).toInt() + 10;
+                QString arg = tmpl;
+                arg.replace("$FILE_PATH", fi.absoluteFilePath());
+                arg.replace("$LANGUAGE", lang);
+                arg.replace("$FONT_SIZE", QString::number(fontSize));
+                QProcess::startDetached(path, {arg});
             });
         }
         menu.addSeparator();

@@ -6,6 +6,7 @@
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QLabel>
 #include <QLineEdit>
 #include <QTreeWidget>
 #include <QMessageBox>
@@ -36,15 +37,23 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     m_editorList->setSelectionMode(QAbstractItemView::SingleSelection);
     m_editorList->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
     m_editorList->setRootIsDecorated(false);
+    m_editorList->setDragDropMode(QAbstractItemView::InternalMove);
+    m_editorList->setDefaultDropAction(Qt::MoveAction);
+    m_editorList->setDragEnabled(true);
+    m_editorList->setAcceptDrops(true);
+    m_editorList->setDropIndicatorShown(true);
 
     auto *addBtn = new QPushButton(tr("Добавить"), this);
     auto *removeBtn = new QPushButton(tr("Удалить"), this);
+    auto *argsBtn = new QPushButton(tr("Аргументы"), this);
     connect(addBtn, &QPushButton::clicked, this, &SettingsDialog::onAddEditor);
     connect(removeBtn, &QPushButton::clicked, this, &SettingsDialog::onRemoveEditor);
+    connect(argsBtn, &QPushButton::clicked, this, &SettingsDialog::onEditArgs);
 
     auto *btnRow = new QHBoxLayout;
     btnRow->addWidget(addBtn);
     btnRow->addWidget(removeBtn);
+    btnRow->addWidget(argsBtn);
     btnRow->addStretch();
 
     auto *form = new QFormLayout;
@@ -78,12 +87,14 @@ void SettingsDialog::setEditorList(const QStringList &list)
 {
     m_editorList->clear();
     for (const QString &entry : list) {
-        const int sep = entry.indexOf('|');
-        QString name = (sep >= 0) ? entry.left(sep) : QFileInfo(entry).fileName();
-        QString path = (sep >= 0) ? entry.mid(sep + 1) : entry;
+        const QStringList parts = entry.split('|');
+        QString name = parts.size() > 0 ? parts[0] : QFileInfo(entry).fileName();
+        QString path = parts.size() > 1 ? parts[1] : entry;
+        QString tmpl = parts.size() > 2 ? parts[2] : QStringLiteral("$FILE_PATH");
         auto *item = new QTreeWidgetItem(m_editorList);
         item->setText(0, name);
         item->setText(1, path);
+        item->setData(1, Qt::UserRole + 1, tmpl);
     }
 }
 
@@ -94,8 +105,9 @@ QStringList SettingsDialog::editorList() const
         QTreeWidgetItem *item = m_editorList->topLevelItem(i);
         const QString name = item->text(0).trimmed();
         const QString path = item->text(1).trimmed();
+        const QString tmpl = item->data(1, Qt::UserRole + 1).toString();
         if (!path.isEmpty())
-            list << (name + "|" + path);
+            list << (name + "|" + path + "|" + tmpl);
     }
     return list;
 }
@@ -141,4 +153,39 @@ bool SettingsDialog::validateAndApply()
 
     emit settingsApplied(p, showHidden());
     return true;
+}
+
+void SettingsDialog::onEditArgs()
+{
+    QTreeWidgetItem *item = m_editorList->currentItem();
+    if (!item) {
+        QMessageBox::information(this, tr("Аргументы"), tr("Сначала выберите редактор в списке."));
+        return;
+    }
+
+    QDialog dlg(this);
+    dlg.setWindowTitle(tr("Аргументы для %1").arg(item->text(0)));
+
+    auto *help = new QLabel(tr("Доступные замены:\n"
+                               "  $FILE_PATH — путь к открываемому файлу\n"
+                               "  $LANGUAGE — текущий язык (ru/en)\n"
+                               "  $FONT_SIZE — размер шрифта"), &dlg);
+    help->setWordWrap(true);
+    help->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+
+    auto *edit = new QLineEdit(item->data(1, Qt::UserRole + 1).toString(), &dlg);
+    edit->setPlaceholderText(QStringLiteral("$FILE_PATH"));
+
+    auto *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
+    QObject::connect(buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+    QObject::connect(buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+
+    auto *layout = new QVBoxLayout(&dlg);
+    layout->addWidget(help);
+    layout->addWidget(edit);
+    layout->addWidget(buttons);
+
+    if (dlg.exec() == QDialog::Accepted) {
+        item->setData(1, Qt::UserRole + 1, edit->text().trimmed());
+    }
 }

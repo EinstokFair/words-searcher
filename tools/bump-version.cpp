@@ -103,24 +103,8 @@ int main(int argc, char *argv[]) {
         replaceInFile(root + "/" + doc, docRe, "<!--VERSION(N.N.N)-->" + version);
     }
 
-    // Если --autotools, то собираем tarball, Manifest, коммит, тег
-    if (doAutotools) {
-        if (!run("make", {"dist"}, root)) return 1;
-        if (!run(root + "/tools/manifest-signer",
-                 {root + "/words-searcher-" + version + ".tar.gz",
-                  root + "/packaging/gentoo/app-misc/words-searcher/words-searcher-0.1.ebuild",
-                  root + "/packaging/gentoo/app-misc/words-searcher/Manifest"},
-                 root)) return 1;
-
-        if (!run("git", {"add", "-A"}, root)) return 1;
-        if (!run("git", {"commit", "-m", "release: " + version}, root)) {
-            QTextStream(stdout) << "Nothing to commit.\n";
-        }
-        if (!run("git", {"tag", version}, root)) return 1;
-    }
-
     QTextStream(stdout) << "Version " << version << " set"
-                        << (doAutotools ? " (with autotools: tarball, Manifest, commit, tag)" : " (documents only)")
+                        << (doAutotools ? " (autotools files)" : " (documents only)")
                         << ".\n";
     return 0;
 }

@@ -18,6 +18,7 @@
         <source>Размер</source>
         <translation>Size</translation>
     </message>
+    <message><source>Доступные замены:\n  $FILE_PATH — путь к открываемому файлу\n  $LANGUAGE — текущий язык (ru/en)\n  $FONT_SIZE — размер шрифта</source><translation>Available substitutions:\n  $FILE_PATH — path to the file being opened\n  $LANGUAGE — current language (ru/en)\n  $FONT_SIZE — font size</translation></message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -104,22 +105,22 @@
     <message>
         <location filename="../src/MainWindow.cpp" line="357"/>
         <source>Открыть директорию в Dolphin</source>
-        <translation type="unfinished"></translation>
+        <translation>Open directory in Dolphin</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="361"/>
         <source>Открыть директорию в Nautilus</source>
-        <translation type="unfinished"></translation>
+        <translation>Open directory in Nautilus</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="373"/>
+        <location filename="../src/MainWindow.cpp" line="374"/>
         <source>Открыть в %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Open in %1</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="379"/>
+        <location filename="../src/MainWindow.cpp" line="387"/>
         <source>Открыть файл в Firefox</source>
-        <translation type="unfinished"></translation>
+        <translation>Open file in Firefox</translation>
     </message>
     <message>
         <source>words-searcher 0.0.1</source>
@@ -159,46 +160,75 @@
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="19"/>
+        <location filename="../src/SettingsDialog.cpp" line="20"/>
         <source>Настройки</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="23"/>
+        <location filename="../src/SettingsDialog.cpp" line="24"/>
         <source>Обзор…</source>
         <translation>Browse…</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="34"/>
-        <source>Название</source><translation>Name</translation>
+        <location filename="../src/SettingsDialog.cpp" line="35"/>
+        <source>Название</source>
+        <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="34"/>
-        <source>Путь</source><translation>Path</translation>
+        <location filename="../src/SettingsDialog.cpp" line="35"/>
+        <source>Путь</source>
+        <translation>Path</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="40"/>
-        <source>Добавить</source><translation>Add</translation>
+        <location filename="../src/SettingsDialog.cpp" line="46"/>
+        <source>Добавить</source>
+        <translation>Add</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="41"/>
-        <source>Удалить</source><translation>Remove</translation>
+        <location filename="../src/SettingsDialog.cpp" line="47"/>
+        <source>Удалить</source>
+        <translation>Remove</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="53"/>
-        <source>Редакторы:</source><translation>Editors:</translation>
+        <location filename="../src/SettingsDialog.cpp" line="48"/>
+        <location filename="../src/SettingsDialog.cpp" line="162"/>
+        <source>Аргументы</source><translation>Arguments</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="105"/>
-        <source>Выбор редактора</source><translation>Select editor</translation>
+        <location filename="../src/SettingsDialog.cpp" line="62"/>
+        <source>Редакторы:</source>
+        <translation>Editors:</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="30"/>
+        <location filename="../src/SettingsDialog.cpp" line="117"/>
+        <source>Выбор редактора</source>
+        <translation>Select editor</translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.cpp" line="162"/>
+        <source>Сначала выберите редактор в списке.</source><translation>Select an editor in the list first.</translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.cpp" line="167"/>
+        <source>Аргументы для %1</source><translation>Arguments for %1</translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.cpp" line="169"/>
+        <source>Доступные замены:
+  $FILE_PATH — путь к открываемому файлу
+  $LANGUAGE — текущий язык (ru/en)
+  $FONT_SIZE — размер шрифта</source><translation>Available substitutions:
+  $FILE_PATH — path to the file being opened
+  $LANGUAGE — current language (ru/en)
+  $FONT_SIZE — font size</translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.cpp" line="31"/>
         <source>Показывать скрытые</source>
         <translation>Show hidden</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="51"/>
+        <location filename="../src/SettingsDialog.cpp" line="60"/>
         <source>Корневая директория:</source>
         <translation>Root directory:</translation>
     </message>
@@ -207,19 +237,19 @@
         <translation type="vanished">Editor:</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="122"/>
+        <location filename="../src/SettingsDialog.cpp" line="134"/>
         <source>Выбор корневой директории</source>
         <translation>Select root directory</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="132"/>
+        <location filename="../src/SettingsDialog.cpp" line="144"/>
         <source>Ошибка</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.cpp" line="133"/>
+        <location filename="../src/SettingsDialog.cpp" line="145"/>
         <source>Путь недоступен для чтения: %1</source>
-        <translation type="unfinished">Path is not readable: %1</translation>
+        <translation>Path is not readable: %1</translation>
     </message>
 </context>
 </TS>

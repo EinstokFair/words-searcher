@@ -26,6 +26,7 @@ private slots:
     void onBrowse();
     void onAddEditor();
     void onRemoveEditor();
+    void onEditArgs();
 
 private:
     bool validateAndApply();
