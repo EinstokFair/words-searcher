@@ -18,8 +18,10 @@ build:gentoo:
     - mkdir -p /var/cache/binpkgs
     - emerge --sync || true
     - emerge --buildpkg --oneshot app-misc/words-searcher
+    - mkdir -p binpkgs
+    - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true
   artifacts:
     paths:
-      - /var/cache/binpkgs/*.gpkg.tar
-      - /var/cache/binpkgs/*.tbz2
+      - binpkgs/*.gpkg.tar
+      - binpkgs/*.tbz2
     expire_in: 1 week
