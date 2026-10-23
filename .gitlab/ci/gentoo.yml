@@ -24,12 +24,13 @@ build:gentoo:
       priority = 100
       CONF
     - mkdir -p /var/cache/binpkgs /var/cache/distfiles
-    # Копируем готовый архив из артефактов build:dist
-    - cp words-searcher-0.0.1.tar.gz /var/cache/distfiles/
+    # Берём имя архива из Manifest (он всегда соответствует версии)
+    - TARBALL=$(awk '/^DIST/ {print $2}' packaging/gentoo/app-misc/words-searcher/Manifest)
+    - echo "Using tarball: $TARBALL"
+    - cp "$TARBALL" /var/cache/distfiles/
     # Синхронизация дерева Portage
     - emerge-webrsync || true
-    # Используем Manifest из репозитория; если хэши не совпадут — emerge упадёт (это ошибка сборки)
-    # Собираем пакет (зависимости подтянутся из ebuild)
+    # Собираем пакет (Manifest уже в репозитории)
     - emerge --buildpkg --oneshot app-misc/words-searcher
     - mkdir -p binpkgs
     - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true
