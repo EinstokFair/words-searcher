@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: debian:trixie-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            build-essential qt6-base-dev qt6-base-dev-tools \
+            autoconf automake libtool pkg-config ca-certificates
+
+      - name: Build
+        run: |
+          autoreconf -fi
+          ./configure
+          make -j"$(nproc)"
+
+      - name: Smoke test (offscreen)
+        run: |
+          QT_QPA_PLATFORM=offscreen timeout 5 ./words-searcher || test $? -eq 124
