@@ -3,7 +3,7 @@
 # 1) bump-version: замена версии в Autotools-файлах и документах
 # 2) make dist: tarball
 # 3) manifest-signer: Manifest из свежего tarball'а (попадает в тот же коммит)
-# 4) git add/commit/tag
+# 4) git add/commit (тег — вручную, после успешной сборки в CI)
 set -e
 if [ -z "$1" ]; then echo "Usage: $0 <new-version>"; exit 1; fi
 V="$1"
@@ -18,6 +18,8 @@ make dist
 
 git add -A
 git commit -m "release: $V" || echo "Nothing to commit."
-git tag "v$V"
+# Тег ставится ВРУЧНУЮ, на ту версию, которая прошла сборку в CI.
+# Автоматический тег здесь преждевременен: CI ещё не подтвердил сборку.
+# git tag "v$V"
 
-echo "Релиз $V готов (tarball, Manifest, commit, tag)."
+echo "Релиз $V готов (tarball, Manifest, commit). Тег — вручную, после CI."
