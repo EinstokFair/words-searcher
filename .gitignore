@@ -1,13 +1,8 @@
 # Autotools / сборка
 Makefile
-Makefile.in
-/aclocal.m4
 /autom4te.cache/
-/build-aux/
 /config.log
 /config.status
-/configure
-/configure~
 /libtool
 /stamp-h1
 *.o
@@ -35,7 +30,6 @@ tools/manifest-signer
 tools/.dirstamp
 
 # Autotools: сгенерированные файлы
-/m4/
 src/.dirstamp
 # генерируется из resources.qrc
 qrc_resources.cpp

@@ -8,7 +8,6 @@ build:dist:
   variables:
     SOURCE_DATE_EPOCH: "0"
   script:
-    - autoreconf -fi
     - ./configure
     - make dist
   artifacts:
