@@ -25,3 +25,5 @@ words_searcher_LDADD = $(QT6_LIBS)
 
 src/moc_%.cpp: src/%.h
 	$(MOC) $< -o $@
+
+EXTRA_DIST = COPYING README.en.md

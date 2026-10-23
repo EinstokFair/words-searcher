@@ -26,3 +26,6 @@ src/words_searcher-*.o
 
 # Прочее
 *~
+
+# артефакты make dist
+*.tar.gz
