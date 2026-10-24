@@ -405,6 +405,9 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
 
+# -fPIC для всех целей (Qt6 требует PIC)
+AM_CXXFLAGS = -fPIC
+
 # Детерминированный dist: фиксированные timestamp/owner/порядок (GNU tar)
 TAR_OPTIONS = --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner --format=posix --mode=go+u,go-w
 
@@ -430,7 +433,7 @@ BUILT_SOURCES = $(nodist_words_searcher_SOURCES) \
 CLEANFILES = $(nodist_words_searcher_SOURCES) \
 	translations/words-searcher_en.qm qrc_resources.cpp
 words_searcher_CPPFLAGS = $(QT6_CFLAGS) -Isrc
-words_searcher_CXXFLAGS = -std=c++17 -fPIC
+words_searcher_CXXFLAGS = -std=c++17
 words_searcher_LDADD = $(QT6_LIBS)
 EXTRA_DIST = COPYING README.en.md \
              resources.qrc \

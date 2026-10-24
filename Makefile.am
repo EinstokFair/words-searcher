@@ -1,5 +1,8 @@
 ACLOCAL_AMFLAGS = -I m4
 
+# -fPIC для всех целей (Qt6 требует PIC)
+AM_CXXFLAGS = -fPIC
+
 # Детерминированный dist: фиксированные timestamp/owner/порядок (GNU tar)
 TAR_OPTIONS = --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner --format=posix --mode=go+u,go-w
 export TAR_OPTIONS
@@ -30,7 +33,7 @@ BUILT_SOURCES = $(nodist_words_searcher_SOURCES)
 CLEANFILES = $(nodist_words_searcher_SOURCES)
 
 words_searcher_CPPFLAGS = $(QT6_CFLAGS) -Isrc
-words_searcher_CXXFLAGS = -std=c++17 -fPIC
+words_searcher_CXXFLAGS = -std=c++17
 words_searcher_LDADD = $(QT6_LIBS)
 
 src/moc_%.cpp: src/%.h
