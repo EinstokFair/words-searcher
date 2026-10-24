@@ -1,6 +1,6 @@
 EAPI=8
 
-inherit autotools
+inherit autotools qt-utils
 
 DESCRIPTION="Directory tree viewer with search planned"
 HOMEPAGE="https://github.com/EinstokFair/words-searcher"
@@ -16,6 +16,10 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 
+
+src_configure() {
+	econf MOC="${EPREFIX}$(qt_get_libexecdir 6)/moc"
+}
 
 src_prepare() {
 	default
