@@ -15,6 +15,7 @@ build:gentoo:
         - .gitlab/ci/**/*
   variables:
     ACCEPT_KEYWORDS: "~amd64"
+    FEATURES: "buildpkg"
   script:
     - mkdir -p /etc/portage/repos.conf /var/cache/distfiles /var/cache/binpkgs
     - |
@@ -35,6 +36,13 @@ build:gentoo:
       echo "===== Manifest ====="
       grep '^DIST' packaging/gentoo/app-misc/words-searcher/Manifest
     - emerge --buildpkg --oneshot app-misc/words-searcher
+    - |
+      echo "===== binpkg (после emerge) ====="
+      ls -la /var/cache/binpkgs/ || echo "каталог пуст"
+      if ! ls /var/cache/binpkgs/*.gpkg.tar 1>/dev/null 2>&1 && ! ls /var/cache/binpkgs/*.tbz2 1>/dev/null 2>&1; then
+        echo "ERROR: binpkg не создан (нет *.gpkg.tar / *.tbz2 в /var/cache/binpkgs)"
+        exit 1
+      fi
     - mkdir -p binpkgs
     - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true
   artifacts:
