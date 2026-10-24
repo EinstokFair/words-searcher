@@ -18,6 +18,14 @@ fi
 
 ./tools/bump-version "$V" --autotools doc/REQUIREMENTS.ru.html doc/Testing.ru.html
 
+# Обновить SRC_URI в актуальном ebuild (bump-version ищет старый путь 0.1.ebuild)
+EBUILD_DIR="packaging/gentoo/app-misc/words-searcher"
+EBUILD_FILE="$EBUILD_DIR/words-searcher-$V.ebuild"
+if [ -f "$EBUILD_FILE" ]; then
+  sed -i -E "s|^(SRC_URI=\"words-searcher-)[0-9.]+(\\.tar\\.gz\")|\1${V}\2|" "$EBUILD_FILE"
+  echo "SRC_URI updated in $EBUILD_FILE to $V"
+fi
+
 # Пересобрать Makefile из configure.ac/Makefile.am (чтобы TAR/EXTRA_DIST применились)
 # Фиксируем SOURCE_DATE_EPOCH (как в build:dist), чтобы tarball был детерминирован
 export SOURCE_DATE_EPOCH=0
