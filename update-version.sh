@@ -11,7 +11,6 @@ V="$1"
 ./tools/bump-version "$V" --autotools doc/REQUIREMENTS.ru.html doc/Testing.ru.html
 
 # Пересобрать Makefile из configure.ac/Makefile.am (чтобы TAR/EXTRA_DIST применились)
-autoreconf -fi
 ./configure
 make dist
 ./tools/manifest-signer \
