@@ -41,15 +41,22 @@ src/moc_%.cpp: src/%.h
 EXTRA_DIST = COPYING README.en.md \
              resources.qrc \
              translations/words-searcher_en.ts \
-             translations/words-searcher_en.qm
+             translations/words-searcher_ru.ts
 
+
+# Переводы: установка .qm (ru всегда, en — если HAVE_EN)
+translationsdir = $(datadir)/words-searcher/translations
+translations_DATA = translations/words-searcher_ru.qm
+if HAVE_EN
+translations_DATA += translations/words-searcher_en.qm
+endif
+translations/words-searcher_ru.qm: translations/words-searcher_ru.ts
+	$(LRELEASE) $< -qm $@
 translations/words-searcher_en.qm: translations/words-searcher_en.ts
 	$(LRELEASE) $< -qm $@
-
-BUILT_SOURCES += translations/words-searcher_en.qm
 CLEANFILES += translations/words-searcher_en.qm
 
-qrc_resources.cpp: resources.qrc translations/words-searcher_en.qm
+qrc_resources.cpp: resources.qrc
 	$(RCC) -name resources $< -o $@
 
 BUILT_SOURCES += qrc_resources.cpp

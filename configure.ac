@@ -50,4 +50,17 @@ AS_IF([test "x$RCC" = "xno" -a -x /usr/lib/qt6/libexec/rcc], [RCC=/usr/lib/qt6/l
 AC_MSG_NOTICE([using rcc: $RCC])
 
 AC_CONFIG_FILES([Makefile])
+
+# LINGUAS: выбор языков (ru всегда, en — опционально)
+AC_ARG_VAR([LINGUAS], [Language(s) to install (space-separated)])
+if test -z "$LINGUAS"; then
+    LINGUAS="ru en"
+fi
+AC_SUBST([LINGUAS])
+have_en=no
+for lang in $LINGUAS; do
+    if test "x$lang" = "xen"; then have_en=yes; fi
+done
+AM_CONDITIONAL([HAVE_EN], [test "x$have_en" = "xyes"])
+
 AC_OUTPUT

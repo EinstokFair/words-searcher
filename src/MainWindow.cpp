@@ -264,7 +264,16 @@ void MainWindow::switchLanguage(const QString &code)
     QCoreApplication::removeTranslator(m_qtTranslator);
 
     if (code == QStringLiteral("en")) {
-        if (m_translator->load(QStringLiteral(":/i18n/words-searcher_en.qm"))) {
+        QString translationPath;
+        QString systemPath = QStandardPaths::locate(
+            QStandardPaths::GenericDataLocation,
+            "words-searcher/translations/words-searcher_en.qm");
+        if (!systemPath.isEmpty()) {
+            translationPath = systemPath;
+        } else {
+            translationPath = ":/i18n/words-searcher_en.qm";
+        }
+        if (m_translator->load(translationPath)) {
             QCoreApplication::installTranslator(m_translator);
         }
     } else if (code == QStringLiteral("ru")) {
