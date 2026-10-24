@@ -10,6 +10,13 @@ build:dist:
   script:
     - ./configure
     - make dist
+    - echo "===== [build:dist] SHA256 tarball ====="
+    - sha256sum words-searcher-*.tar.gz
+    - echo "===== [build:dist] tar -tvzf (первые 10) ====="
+    - tar -tvzf words-searcher-*.tar.gz | head -n 10
+    - echo "===== [build:dist] tar --version / gzip --version ====="
+    - tar --version | head -n1
+    - gzip --version | head -n1
   artifacts:
     paths:
       - words-searcher-*.tar.gz
