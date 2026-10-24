@@ -18,7 +18,11 @@ RDEPEND="${DEPEND}"
 
 
 src_configure() {
-	econf MOC="${EPREFIX}$(qt_get_libexecdir 6)/moc"
+	econf \
+		MOC="${EPREFIX}$(qt_get_libexecdir 6)/moc" \
+		RCC="${EPREFIX}$(qt_get_libexecdir 6)/rcc" \
+		LRELEASE="${EPREFIX}$(qt_get_bindir 6)/lrelease" \
+		LUPDATE="${EPREFIX}$(qt_get_bindir 6)/lupdate"
 }
 
 src_prepare() {
