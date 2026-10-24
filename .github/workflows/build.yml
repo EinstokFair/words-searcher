@@ -17,18 +17,11 @@ on:
 jobs:
   build-dist:
     runs-on: ubuntu-latest
-    container: debian:trixie-slim
+    container: ghcr.io/einstokfair/words-searcher-debian-build:latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends \
-            build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools \
-            autoconf automake libtool pkg-config ca-certificates
       - name: Build tarball
         run: |
-          autoreconf -fi
           ./configure
           make dist
       - name: Upload tarball
@@ -39,7 +32,7 @@ jobs:
 
   build-debian:
     runs-on: ubuntu-latest
-    container: debian:trixie-slim
+    container: ghcr.io/einstokfair/words-searcher-debian-build:latest
     needs: build-dist
     steps:
       - uses: actions/checkout@v4
@@ -47,13 +40,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: words-searcher-tarball
-      - name: Install dependencies
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends \
-            build-essential qt6-base-dev qt6-base-dev-tools qt6-l10n-tools \
-            qt6-translations-l10n autoconf automake libtool pkg-config \
-            ca-certificates debhelper dpkg-dev
       - name: Build .deb
         run: |
           TARBALL=$(basename words-searcher-*.tar.gz)
@@ -74,3 +60,42 @@ jobs:
         with:
           name: words-searcher-deb
           path: debs/*.deb
+
+  build-gentoo:
+    runs-on: ubuntu-latest
+    container: ghcr.io/einstokfair/words-searcher-gentoo-build:latest
+    needs: build-dist
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: words-searcher-tarball
+      - name: Prepare overlay and emerge
+        run: |
+          mkdir -p /etc/portage/repos.conf /var/cache/distfiles /var/cache/binpkgs
+          cat > /etc/portage/repos.conf/local.conf <<CONF
+          [words-searcher]
+          location = /__w/words-searcher/words-searcher/packaging/gentoo
+          priority = 100
+          CONF
+
+          TARBALL=$(awk '/^DIST/ {print $2}' packaging/gentoo/app-misc/words-searcher/Manifest)
+          echo "Using tarball: $TARBALL"
+          cp "$TARBALL" /var/cache/distfiles/
+          chmod -R 777 /var/cache/distfiles
+
+          echo "===== emerge ====="
+          ACCEPT_KEYWORDS="~amd64" emerge --buildpkg --oneshot app-misc/words-searcher
+
+          echo "===== binpkg ====="
+          find /var/cache/binpkgs -type f -name '*.gpkg.tar' -o -name '*.tbz2' || echo "binpkg не найден"
+          mkdir -p binpkgs
+          find /var/cache/binpkgs -type f -name '*.gpkg.tar' -o -name '*.tbz2' | while read f; do
+            cp "$f" binpkgs/
+          done
+      - name: Upload binpkg
+        uses: actions/upload-artifact@v4
+        with:
+          name: words-searcher-gentoo-binpkg
+          path: binpkgs/*.gpkg.tar
