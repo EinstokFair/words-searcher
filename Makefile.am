@@ -1,8 +1,9 @@
 ACLOCAL_AMFLAGS = -I m4
 
 # Детерминированный dist: фиксированные timestamp/owner/порядок (GNU tar)
-TAR = tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner --format=posix
-export TAR
+TAR_OPTIONS = --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner --format=posix
+export TAR_OPTIONS
+
 
 
 # gzip без timestamp/имени в заголовке (воспроизводимый .tar.gz)
