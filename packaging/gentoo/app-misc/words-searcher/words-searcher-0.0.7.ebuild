@@ -16,7 +16,6 @@ DEPEND="
 "
 RDEPEND="${DEPEND}"
 
-S="${WORKDIR}/words-searcher-0.0.7"
 
 src_prepare() {
 	default
