@@ -38,13 +38,17 @@ build:gentoo:
     - emerge --buildpkg --oneshot app-misc/words-searcher
     - |
       echo "===== binpkg (после emerge) ====="
-      ls -la /var/cache/binpkgs/ || echo "каталог пуст"
-      if ! ls /var/cache/binpkgs/*.gpkg.tar 1>/dev/null 2>&1 && ! ls /var/cache/binpkgs/*.tbz2 1>/dev/null 2>&1; then
+      find /var/cache/binpkgs -type f -name '*.gpkg.tar' -o -name '*.tbz2' || echo "binpkg не найден"
+      BINPKG=$(find /var/cache/binpkgs -type f -name '*.gpkg.tar' -o -name '*.tbz2' | head -n1)
+      if [ -z "$BINPKG" ]; then
         echo "ERROR: binpkg не создан (нет *.gpkg.tar / *.tbz2 в /var/cache/binpkgs)"
         exit 1
       fi
     - mkdir -p binpkgs
-    - cp /var/cache/binpkgs/*.gpkg.tar binpkgs/ 2>/dev/null || cp /var/cache/binpkgs/*.tbz2 binpkgs/ 2>/dev/null || true
+    - |
+      find /var/cache/binpkgs -type f -name '*.gpkg.tar' -o -name '*.tbz2' | while read f; do
+        cp "$f" binpkgs/
+      done
   artifacts:
     paths:
       - binpkgs/*.gpkg.tar
