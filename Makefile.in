@@ -14,6 +14,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -92,6 +93,7 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = words-searcher$(EXEEXT) tools/manifest-signer$(EXEEXT) \
 	tools/bump-version$(EXEEXT)
+@HAVE_EN_TRUE@am__append_1 = translations/words-searcher_en.qm
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
@@ -107,7 +109,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)"
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(translationsdir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_tools_bump_version_OBJECTS =  \
@@ -207,6 +209,33 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__uninstall_files_from_dir = { \
+  { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
+  || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
+       $(am__cd) "$$dir" && echo $$files | $(am__xargs_n) 40 $(am__rm_f); }; \
+  }
+DATA = $(translations_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -299,6 +328,7 @@ LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
+LINGUAS = @LINGUAS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LRELEASE = @LRELEASE@
@@ -416,8 +446,7 @@ nodist_words_searcher_SOURCES = \
     src/moc_FsProxyModel.cpp \
     qrc_resources.cpp
 
-BUILT_SOURCES = $(nodist_words_searcher_SOURCES) \
-	translations/words-searcher_en.qm qrc_resources.cpp
+BUILT_SOURCES = $(nodist_words_searcher_SOURCES) qrc_resources.cpp
 CLEANFILES = $(nodist_words_searcher_SOURCES) \
 	translations/words-searcher_en.qm qrc_resources.cpp
 words_searcher_CPPFLAGS = $(QT6_CFLAGS) -Isrc
@@ -425,8 +454,12 @@ words_searcher_LDADD = $(QT6_LIBS)
 EXTRA_DIST = COPYING README.en.md \
              resources.qrc \
              translations/words-searcher_en.ts \
-             translations/words-searcher_en.qm
+             translations/words-searcher_ru.ts
 
+
+# Переводы: установка .qm (ru всегда, en — если HAVE_EN)
+translationsdir = $(datadir)/words-searcher/translations
+translations_DATA = translations/words-searcher_ru.qm $(am__append_1)
 tools_manifest_signer_SOURCES = tools/manifest-signer.cpp
 tools_manifest_signer_CPPFLAGS = $(QT6_CFLAGS)
 tools_manifest_signer_LDADD = $(QT6_LIBS)
@@ -756,6 +789,27 @@ clean-libtool:
 
 distclean-libtool:
 	-rm -f libtool config.lt
+install-translationsDATA: $(translations_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(translations_DATA)'; test -n "$(translationsdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(translationsdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(translationsdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(translationsdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(translationsdir)" || exit $$?; \
+	done
+
+uninstall-translationsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(translations_DATA)'; test -n "$(translationsdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(translationsdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -990,9 +1044,9 @@ distcleancheck: distclean
 check-am: all-am
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(translationsdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -1065,7 +1119,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-translationsDATA
 
 install-dvi: install-dvi-am
 
@@ -1122,7 +1176,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS
+uninstall-am: uninstall-binPROGRAMS uninstall-translationsDATA
 
 .MAKE: all check install install-am install-exec install-strip
 
@@ -1138,11 +1192,12 @@ uninstall-am: uninstall-binPROGRAMS
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-binPROGRAMS
+	install-strip install-translationsDATA installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-translationsDATA
 
 .PRECIOUS: Makefile
 
@@ -1150,11 +1205,12 @@ export TAR_OPTIONS
 
 src/moc_%.cpp: src/%.h
 	$(MOC) $< -o $@
-
+translations/words-searcher_ru.qm: translations/words-searcher_ru.ts
+	$(LRELEASE) $< -qm $@
 translations/words-searcher_en.qm: translations/words-searcher_en.ts
 	$(LRELEASE) $< -qm $@
 
-qrc_resources.cpp: resources.qrc translations/words-searcher_en.qm
+qrc_resources.cpp: resources.qrc
 	$(RCC) -name resources $< -o $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
