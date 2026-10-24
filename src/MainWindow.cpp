@@ -18,6 +18,7 @@
 #include <QStyle>
 #include <QKeyEvent>
 #include <QTranslator>
+#include <QStandardPaths>
 #include <QEvent>
 #include <QWindow>
 #include <QProcess>
