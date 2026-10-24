@@ -18,7 +18,8 @@ make dist
 echo "===== [update-version.sh] SHA256 tarball ====="
 sha256sum words-searcher-$V.tar.gz
 echo "===== [update-version.sh] tar -tvzf (первые 10) ====="
-tar -tvzf words-searcher-$V.tar.gz | head -n 10
+tar -tvzf words-searcher-$V.tar.gz > /tmp/tar-list.txt
+head -n 10 /tmp/tar-list.txt
 echo "===== [update-version.sh] tar --version / gzip --version ====="
 tar --version | head -n1
 gzip --version | head -n1
