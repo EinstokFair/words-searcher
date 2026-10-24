@@ -30,7 +30,7 @@ BUILT_SOURCES = $(nodist_words_searcher_SOURCES)
 CLEANFILES = $(nodist_words_searcher_SOURCES)
 
 words_searcher_CPPFLAGS = $(QT6_CFLAGS) -Isrc
-words_searcher_CXXFLAGS = -std=c++17
+words_searcher_CXXFLAGS = -std=c++17 -fPIC
 words_searcher_LDADD = $(QT6_LIBS)
 
 src/moc_%.cpp: src/%.h

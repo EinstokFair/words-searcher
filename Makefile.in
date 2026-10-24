@@ -430,7 +430,7 @@ BUILT_SOURCES = $(nodist_words_searcher_SOURCES) \
 CLEANFILES = $(nodist_words_searcher_SOURCES) \
 	translations/words-searcher_en.qm qrc_resources.cpp
 words_searcher_CPPFLAGS = $(QT6_CFLAGS) -Isrc
-words_searcher_CXXFLAGS = -std=c++17
+words_searcher_CXXFLAGS = -std=c++17 -fPIC
 words_searcher_LDADD = $(QT6_LIBS)
 EXTRA_DIST = COPYING README.en.md \
              resources.qrc \
