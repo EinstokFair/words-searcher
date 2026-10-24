@@ -8,6 +8,14 @@ set -e
 if [ -z "$1" ]; then echo "Usage: $0 <new-version>"; exit 1; fi
 V="$1"
 
+# Переименовать ebuild по версии пакета (words-searcher-<V>.ebuild)
+EBUILD_DIR="packaging/gentoo/app-misc/words-searcher"
+OLD_EBUILD=$(ls "$EBUILD_DIR"/words-searcher-*.ebuild 2>/dev/null | head -n1)
+if [ -n "$OLD_EBUILD" ] && [ "$OLD_EBUILD" != "$EBUILD_DIR/words-searcher-$V.ebuild" ]; then
+  git mv "$OLD_EBUILD" "$EBUILD_DIR/words-searcher-$V.ebuild" 2>/dev/null || mv "$OLD_EBUILD" "$EBUILD_DIR/words-searcher-$V.ebuild"
+  echo "ebuild renamed to words-searcher-$V.ebuild"
+fi
+
 ./tools/bump-version "$V" --autotools doc/REQUIREMENTS.ru.html doc/Testing.ru.html
 
 # Пересобрать Makefile из configure.ac/Makefile.am (чтобы TAR/EXTRA_DIST применились)
@@ -25,7 +33,7 @@ tar --version | head -n1
 gzip --version | head -n1
 ./tools/manifest-signer \
   "words-searcher-$V.tar.gz" \
-  "packaging/gentoo/app-misc/words-searcher/words-searcher-0.0.ebuild" \
+  "packaging/gentoo/app-misc/words-searcher/words-searcher-$V.ebuild" \
   "packaging/gentoo/app-misc/words-searcher/Manifest"
 
 git add -A

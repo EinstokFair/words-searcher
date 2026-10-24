@@ -1,10 +1,10 @@
 EAPI=8
 
-inherit autotools vcs-snapshot
+inherit autotools
 
 DESCRIPTION="Directory tree viewer with search planned"
 HOMEPAGE="https://github.com/EinstokFair/words-searcher"
-SRC_URI="words-searcher-0.0.7.tar.gz -> words-searcher-0.0.tar.gz"
+SRC_URI="words-searcher-0.0.7.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
@@ -15,6 +15,8 @@ DEPEND="
 	dev-qt/qtbase:6[gui,widgets]
 "
 RDEPEND="${DEPEND}"
+
+S="${WORKDIR}/words-searcher-0.0.7"
 
 src_prepare() {
 	default
