@@ -119,18 +119,10 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-tools_bump_version_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(tools_bump_version_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
 am_tools_manifest_signer_OBJECTS =  \
 	tools/manifest_signer-manifest-signer.$(OBJEXT)
 tools_manifest_signer_OBJECTS = $(am_tools_manifest_signer_OBJECTS)
 tools_manifest_signer_DEPENDENCIES = $(am__DEPENDENCIES_1)
-tools_manifest_signer_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(tools_manifest_signer_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
 am_words_searcher_OBJECTS = src/words_searcher-main.$(OBJEXT) \
 	src/words_searcher-MainWindow.$(OBJEXT) \
 	src/words_searcher-SettingsDialog.$(OBJEXT) \
@@ -143,10 +135,6 @@ nodist_words_searcher_OBJECTS =  \
 words_searcher_OBJECTS = $(am_words_searcher_OBJECTS) \
 	$(nodist_words_searcher_OBJECTS)
 words_searcher_DEPENDENCIES = $(am__DEPENDENCIES_1)
-words_searcher_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(words_searcher_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -406,7 +394,7 @@ top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
 
 # -fPIC для всех целей (Qt6 требует PIC)
-AM_CXXFLAGS = -fPIC
+AM_CXXFLAGS = -std=c++17 -fPIC
 
 # Детерминированный dist: фиксированные timestamp/owner/порядок (GNU tar)
 TAR_OPTIONS = --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner --format=posix --mode=go+u,go-w
@@ -433,7 +421,6 @@ BUILT_SOURCES = $(nodist_words_searcher_SOURCES) \
 CLEANFILES = $(nodist_words_searcher_SOURCES) \
 	translations/words-searcher_en.qm qrc_resources.cpp
 words_searcher_CPPFLAGS = $(QT6_CFLAGS) -Isrc
-words_searcher_CXXFLAGS = -std=c++17
 words_searcher_LDADD = $(QT6_LIBS)
 EXTRA_DIST = COPYING README.en.md \
              resources.qrc \
@@ -442,11 +429,9 @@ EXTRA_DIST = COPYING README.en.md \
 
 tools_manifest_signer_SOURCES = tools/manifest-signer.cpp
 tools_manifest_signer_CPPFLAGS = $(QT6_CFLAGS)
-tools_manifest_signer_CXXFLAGS = -std=c++17
 tools_manifest_signer_LDADD = $(QT6_LIBS)
 tools_bump_version_SOURCES = tools/bump-version.cpp
 tools_bump_version_CPPFLAGS = $(QT6_CFLAGS)
-tools_bump_version_CXXFLAGS = -std=c++17
 tools_bump_version_LDADD = $(QT6_LIBS)
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -541,13 +526,13 @@ tools/bump_version-bump-version.$(OBJEXT): tools/$(am__dirstamp) \
 
 tools/bump-version$(EXEEXT): $(tools_bump_version_OBJECTS) $(tools_bump_version_DEPENDENCIES) $(EXTRA_tools_bump_version_DEPENDENCIES) tools/$(am__dirstamp)
 	@rm -f tools/bump-version$(EXEEXT)
-	$(AM_V_CXXLD)$(tools_bump_version_LINK) $(tools_bump_version_OBJECTS) $(tools_bump_version_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(CXXLINK) $(tools_bump_version_OBJECTS) $(tools_bump_version_LDADD) $(LIBS)
 tools/manifest_signer-manifest-signer.$(OBJEXT):  \
 	tools/$(am__dirstamp) tools/$(DEPDIR)/$(am__dirstamp)
 
 tools/manifest-signer$(EXEEXT): $(tools_manifest_signer_OBJECTS) $(tools_manifest_signer_DEPENDENCIES) $(EXTRA_tools_manifest_signer_DEPENDENCIES) tools/$(am__dirstamp)
 	@rm -f tools/manifest-signer$(EXEEXT)
-	$(AM_V_CXXLD)$(tools_manifest_signer_LINK) $(tools_manifest_signer_OBJECTS) $(tools_manifest_signer_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(CXXLINK) $(tools_manifest_signer_OBJECTS) $(tools_manifest_signer_LDADD) $(LIBS)
 src/$(am__dirstamp):
 	@$(MKDIR_P) src
 	@: >>src/$(am__dirstamp)
@@ -571,7 +556,7 @@ src/words_searcher-moc_FsProxyModel.$(OBJEXT): src/$(am__dirstamp) \
 
 words-searcher$(EXEEXT): $(words_searcher_OBJECTS) $(words_searcher_DEPENDENCIES) $(EXTRA_words_searcher_DEPENDENCIES) 
 	@rm -f words-searcher$(EXEEXT)
-	$(AM_V_CXXLD)$(words_searcher_LINK) $(words_searcher_OBJECTS) $(words_searcher_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(CXXLINK) $(words_searcher_OBJECTS) $(words_searcher_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -623,144 +608,144 @@ am--depfiles: $(am__depfiles_remade)
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
 
 tools/bump_version-bump-version.o: tools/bump-version.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_bump_version_CPPFLAGS) $(CPPFLAGS) $(tools_bump_version_CXXFLAGS) $(CXXFLAGS) -MT tools/bump_version-bump-version.o -MD -MP -MF tools/$(DEPDIR)/bump_version-bump-version.Tpo -c -o tools/bump_version-bump-version.o `test -f 'tools/bump-version.cpp' || echo '$(srcdir)/'`tools/bump-version.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_bump_version_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tools/bump_version-bump-version.o -MD -MP -MF tools/$(DEPDIR)/bump_version-bump-version.Tpo -c -o tools/bump_version-bump-version.o `test -f 'tools/bump-version.cpp' || echo '$(srcdir)/'`tools/bump-version.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tools/$(DEPDIR)/bump_version-bump-version.Tpo tools/$(DEPDIR)/bump_version-bump-version.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tools/bump-version.cpp' object='tools/bump_version-bump-version.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_bump_version_CPPFLAGS) $(CPPFLAGS) $(tools_bump_version_CXXFLAGS) $(CXXFLAGS) -c -o tools/bump_version-bump-version.o `test -f 'tools/bump-version.cpp' || echo '$(srcdir)/'`tools/bump-version.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_bump_version_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tools/bump_version-bump-version.o `test -f 'tools/bump-version.cpp' || echo '$(srcdir)/'`tools/bump-version.cpp
 
 tools/bump_version-bump-version.obj: tools/bump-version.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_bump_version_CPPFLAGS) $(CPPFLAGS) $(tools_bump_version_CXXFLAGS) $(CXXFLAGS) -MT tools/bump_version-bump-version.obj -MD -MP -MF tools/$(DEPDIR)/bump_version-bump-version.Tpo -c -o tools/bump_version-bump-version.obj `if test -f 'tools/bump-version.cpp'; then $(CYGPATH_W) 'tools/bump-version.cpp'; else $(CYGPATH_W) '$(srcdir)/tools/bump-version.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_bump_version_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tools/bump_version-bump-version.obj -MD -MP -MF tools/$(DEPDIR)/bump_version-bump-version.Tpo -c -o tools/bump_version-bump-version.obj `if test -f 'tools/bump-version.cpp'; then $(CYGPATH_W) 'tools/bump-version.cpp'; else $(CYGPATH_W) '$(srcdir)/tools/bump-version.cpp'; fi`
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tools/$(DEPDIR)/bump_version-bump-version.Tpo tools/$(DEPDIR)/bump_version-bump-version.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tools/bump-version.cpp' object='tools/bump_version-bump-version.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_bump_version_CPPFLAGS) $(CPPFLAGS) $(tools_bump_version_CXXFLAGS) $(CXXFLAGS) -c -o tools/bump_version-bump-version.obj `if test -f 'tools/bump-version.cpp'; then $(CYGPATH_W) 'tools/bump-version.cpp'; else $(CYGPATH_W) '$(srcdir)/tools/bump-version.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_bump_version_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tools/bump_version-bump-version.obj `if test -f 'tools/bump-version.cpp'; then $(CYGPATH_W) 'tools/bump-version.cpp'; else $(CYGPATH_W) '$(srcdir)/tools/bump-version.cpp'; fi`
 
 tools/manifest_signer-manifest-signer.o: tools/manifest-signer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_manifest_signer_CPPFLAGS) $(CPPFLAGS) $(tools_manifest_signer_CXXFLAGS) $(CXXFLAGS) -MT tools/manifest_signer-manifest-signer.o -MD -MP -MF tools/$(DEPDIR)/manifest_signer-manifest-signer.Tpo -c -o tools/manifest_signer-manifest-signer.o `test -f 'tools/manifest-signer.cpp' || echo '$(srcdir)/'`tools/manifest-signer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_manifest_signer_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tools/manifest_signer-manifest-signer.o -MD -MP -MF tools/$(DEPDIR)/manifest_signer-manifest-signer.Tpo -c -o tools/manifest_signer-manifest-signer.o `test -f 'tools/manifest-signer.cpp' || echo '$(srcdir)/'`tools/manifest-signer.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tools/$(DEPDIR)/manifest_signer-manifest-signer.Tpo tools/$(DEPDIR)/manifest_signer-manifest-signer.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tools/manifest-signer.cpp' object='tools/manifest_signer-manifest-signer.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_manifest_signer_CPPFLAGS) $(CPPFLAGS) $(tools_manifest_signer_CXXFLAGS) $(CXXFLAGS) -c -o tools/manifest_signer-manifest-signer.o `test -f 'tools/manifest-signer.cpp' || echo '$(srcdir)/'`tools/manifest-signer.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_manifest_signer_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tools/manifest_signer-manifest-signer.o `test -f 'tools/manifest-signer.cpp' || echo '$(srcdir)/'`tools/manifest-signer.cpp
 
 tools/manifest_signer-manifest-signer.obj: tools/manifest-signer.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_manifest_signer_CPPFLAGS) $(CPPFLAGS) $(tools_manifest_signer_CXXFLAGS) $(CXXFLAGS) -MT tools/manifest_signer-manifest-signer.obj -MD -MP -MF tools/$(DEPDIR)/manifest_signer-manifest-signer.Tpo -c -o tools/manifest_signer-manifest-signer.obj `if test -f 'tools/manifest-signer.cpp'; then $(CYGPATH_W) 'tools/manifest-signer.cpp'; else $(CYGPATH_W) '$(srcdir)/tools/manifest-signer.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_manifest_signer_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tools/manifest_signer-manifest-signer.obj -MD -MP -MF tools/$(DEPDIR)/manifest_signer-manifest-signer.Tpo -c -o tools/manifest_signer-manifest-signer.obj `if test -f 'tools/manifest-signer.cpp'; then $(CYGPATH_W) 'tools/manifest-signer.cpp'; else $(CYGPATH_W) '$(srcdir)/tools/manifest-signer.cpp'; fi`
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tools/$(DEPDIR)/manifest_signer-manifest-signer.Tpo tools/$(DEPDIR)/manifest_signer-manifest-signer.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tools/manifest-signer.cpp' object='tools/manifest_signer-manifest-signer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_manifest_signer_CPPFLAGS) $(CPPFLAGS) $(tools_manifest_signer_CXXFLAGS) $(CXXFLAGS) -c -o tools/manifest_signer-manifest-signer.obj `if test -f 'tools/manifest-signer.cpp'; then $(CYGPATH_W) 'tools/manifest-signer.cpp'; else $(CYGPATH_W) '$(srcdir)/tools/manifest-signer.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_manifest_signer_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tools/manifest_signer-manifest-signer.obj `if test -f 'tools/manifest-signer.cpp'; then $(CYGPATH_W) 'tools/manifest-signer.cpp'; else $(CYGPATH_W) '$(srcdir)/tools/manifest-signer.cpp'; fi`
 
 src/words_searcher-main.o: src/main.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-main.o -MD -MP -MF src/$(DEPDIR)/words_searcher-main.Tpo -c -o src/words_searcher-main.o `test -f 'src/main.cpp' || echo '$(srcdir)/'`src/main.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-main.o -MD -MP -MF src/$(DEPDIR)/words_searcher-main.Tpo -c -o src/words_searcher-main.o `test -f 'src/main.cpp' || echo '$(srcdir)/'`src/main.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-main.Tpo src/$(DEPDIR)/words_searcher-main.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/main.cpp' object='src/words_searcher-main.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-main.o `test -f 'src/main.cpp' || echo '$(srcdir)/'`src/main.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-main.o `test -f 'src/main.cpp' || echo '$(srcdir)/'`src/main.cpp
 
 src/words_searcher-main.obj: src/main.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-main.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-main.Tpo -c -o src/words_searcher-main.obj `if test -f 'src/main.cpp'; then $(CYGPATH_W) 'src/main.cpp'; else $(CYGPATH_W) '$(srcdir)/src/main.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-main.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-main.Tpo -c -o src/words_searcher-main.obj `if test -f 'src/main.cpp'; then $(CYGPATH_W) 'src/main.cpp'; else $(CYGPATH_W) '$(srcdir)/src/main.cpp'; fi`
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-main.Tpo src/$(DEPDIR)/words_searcher-main.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/main.cpp' object='src/words_searcher-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-main.obj `if test -f 'src/main.cpp'; then $(CYGPATH_W) 'src/main.cpp'; else $(CYGPATH_W) '$(srcdir)/src/main.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-main.obj `if test -f 'src/main.cpp'; then $(CYGPATH_W) 'src/main.cpp'; else $(CYGPATH_W) '$(srcdir)/src/main.cpp'; fi`
 
 src/words_searcher-MainWindow.o: src/MainWindow.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-MainWindow.o -MD -MP -MF src/$(DEPDIR)/words_searcher-MainWindow.Tpo -c -o src/words_searcher-MainWindow.o `test -f 'src/MainWindow.cpp' || echo '$(srcdir)/'`src/MainWindow.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-MainWindow.o -MD -MP -MF src/$(DEPDIR)/words_searcher-MainWindow.Tpo -c -o src/words_searcher-MainWindow.o `test -f 'src/MainWindow.cpp' || echo '$(srcdir)/'`src/MainWindow.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-MainWindow.Tpo src/$(DEPDIR)/words_searcher-MainWindow.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/MainWindow.cpp' object='src/words_searcher-MainWindow.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-MainWindow.o `test -f 'src/MainWindow.cpp' || echo '$(srcdir)/'`src/MainWindow.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-MainWindow.o `test -f 'src/MainWindow.cpp' || echo '$(srcdir)/'`src/MainWindow.cpp
 
 src/words_searcher-MainWindow.obj: src/MainWindow.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-MainWindow.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-MainWindow.Tpo -c -o src/words_searcher-MainWindow.obj `if test -f 'src/MainWindow.cpp'; then $(CYGPATH_W) 'src/MainWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/MainWindow.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-MainWindow.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-MainWindow.Tpo -c -o src/words_searcher-MainWindow.obj `if test -f 'src/MainWindow.cpp'; then $(CYGPATH_W) 'src/MainWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/MainWindow.cpp'; fi`
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-MainWindow.Tpo src/$(DEPDIR)/words_searcher-MainWindow.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/MainWindow.cpp' object='src/words_searcher-MainWindow.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-MainWindow.obj `if test -f 'src/MainWindow.cpp'; then $(CYGPATH_W) 'src/MainWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/MainWindow.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-MainWindow.obj `if test -f 'src/MainWindow.cpp'; then $(CYGPATH_W) 'src/MainWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/MainWindow.cpp'; fi`
 
 src/words_searcher-SettingsDialog.o: src/SettingsDialog.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-SettingsDialog.o -MD -MP -MF src/$(DEPDIR)/words_searcher-SettingsDialog.Tpo -c -o src/words_searcher-SettingsDialog.o `test -f 'src/SettingsDialog.cpp' || echo '$(srcdir)/'`src/SettingsDialog.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-SettingsDialog.o -MD -MP -MF src/$(DEPDIR)/words_searcher-SettingsDialog.Tpo -c -o src/words_searcher-SettingsDialog.o `test -f 'src/SettingsDialog.cpp' || echo '$(srcdir)/'`src/SettingsDialog.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-SettingsDialog.Tpo src/$(DEPDIR)/words_searcher-SettingsDialog.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/SettingsDialog.cpp' object='src/words_searcher-SettingsDialog.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-SettingsDialog.o `test -f 'src/SettingsDialog.cpp' || echo '$(srcdir)/'`src/SettingsDialog.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-SettingsDialog.o `test -f 'src/SettingsDialog.cpp' || echo '$(srcdir)/'`src/SettingsDialog.cpp
 
 src/words_searcher-SettingsDialog.obj: src/SettingsDialog.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-SettingsDialog.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-SettingsDialog.Tpo -c -o src/words_searcher-SettingsDialog.obj `if test -f 'src/SettingsDialog.cpp'; then $(CYGPATH_W) 'src/SettingsDialog.cpp'; else $(CYGPATH_W) '$(srcdir)/src/SettingsDialog.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-SettingsDialog.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-SettingsDialog.Tpo -c -o src/words_searcher-SettingsDialog.obj `if test -f 'src/SettingsDialog.cpp'; then $(CYGPATH_W) 'src/SettingsDialog.cpp'; else $(CYGPATH_W) '$(srcdir)/src/SettingsDialog.cpp'; fi`
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-SettingsDialog.Tpo src/$(DEPDIR)/words_searcher-SettingsDialog.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/SettingsDialog.cpp' object='src/words_searcher-SettingsDialog.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-SettingsDialog.obj `if test -f 'src/SettingsDialog.cpp'; then $(CYGPATH_W) 'src/SettingsDialog.cpp'; else $(CYGPATH_W) '$(srcdir)/src/SettingsDialog.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-SettingsDialog.obj `if test -f 'src/SettingsDialog.cpp'; then $(CYGPATH_W) 'src/SettingsDialog.cpp'; else $(CYGPATH_W) '$(srcdir)/src/SettingsDialog.cpp'; fi`
 
 src/words_searcher-FsProxyModel.o: src/FsProxyModel.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-FsProxyModel.o -MD -MP -MF src/$(DEPDIR)/words_searcher-FsProxyModel.Tpo -c -o src/words_searcher-FsProxyModel.o `test -f 'src/FsProxyModel.cpp' || echo '$(srcdir)/'`src/FsProxyModel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-FsProxyModel.o -MD -MP -MF src/$(DEPDIR)/words_searcher-FsProxyModel.Tpo -c -o src/words_searcher-FsProxyModel.o `test -f 'src/FsProxyModel.cpp' || echo '$(srcdir)/'`src/FsProxyModel.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-FsProxyModel.Tpo src/$(DEPDIR)/words_searcher-FsProxyModel.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/FsProxyModel.cpp' object='src/words_searcher-FsProxyModel.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-FsProxyModel.o `test -f 'src/FsProxyModel.cpp' || echo '$(srcdir)/'`src/FsProxyModel.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-FsProxyModel.o `test -f 'src/FsProxyModel.cpp' || echo '$(srcdir)/'`src/FsProxyModel.cpp
 
 src/words_searcher-FsProxyModel.obj: src/FsProxyModel.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-FsProxyModel.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-FsProxyModel.Tpo -c -o src/words_searcher-FsProxyModel.obj `if test -f 'src/FsProxyModel.cpp'; then $(CYGPATH_W) 'src/FsProxyModel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/FsProxyModel.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-FsProxyModel.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-FsProxyModel.Tpo -c -o src/words_searcher-FsProxyModel.obj `if test -f 'src/FsProxyModel.cpp'; then $(CYGPATH_W) 'src/FsProxyModel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/FsProxyModel.cpp'; fi`
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-FsProxyModel.Tpo src/$(DEPDIR)/words_searcher-FsProxyModel.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/FsProxyModel.cpp' object='src/words_searcher-FsProxyModel.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-FsProxyModel.obj `if test -f 'src/FsProxyModel.cpp'; then $(CYGPATH_W) 'src/FsProxyModel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/FsProxyModel.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-FsProxyModel.obj `if test -f 'src/FsProxyModel.cpp'; then $(CYGPATH_W) 'src/FsProxyModel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/FsProxyModel.cpp'; fi`
 
 src/words_searcher-moc_MainWindow.o: src/moc_MainWindow.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_MainWindow.o -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_MainWindow.Tpo -c -o src/words_searcher-moc_MainWindow.o `test -f 'src/moc_MainWindow.cpp' || echo '$(srcdir)/'`src/moc_MainWindow.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_MainWindow.o -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_MainWindow.Tpo -c -o src/words_searcher-moc_MainWindow.o `test -f 'src/moc_MainWindow.cpp' || echo '$(srcdir)/'`src/moc_MainWindow.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-moc_MainWindow.Tpo src/$(DEPDIR)/words_searcher-moc_MainWindow.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/moc_MainWindow.cpp' object='src/words_searcher-moc_MainWindow.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_MainWindow.o `test -f 'src/moc_MainWindow.cpp' || echo '$(srcdir)/'`src/moc_MainWindow.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_MainWindow.o `test -f 'src/moc_MainWindow.cpp' || echo '$(srcdir)/'`src/moc_MainWindow.cpp
 
 src/words_searcher-moc_MainWindow.obj: src/moc_MainWindow.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_MainWindow.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_MainWindow.Tpo -c -o src/words_searcher-moc_MainWindow.obj `if test -f 'src/moc_MainWindow.cpp'; then $(CYGPATH_W) 'src/moc_MainWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_MainWindow.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_MainWindow.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_MainWindow.Tpo -c -o src/words_searcher-moc_MainWindow.obj `if test -f 'src/moc_MainWindow.cpp'; then $(CYGPATH_W) 'src/moc_MainWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_MainWindow.cpp'; fi`
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-moc_MainWindow.Tpo src/$(DEPDIR)/words_searcher-moc_MainWindow.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/moc_MainWindow.cpp' object='src/words_searcher-moc_MainWindow.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_MainWindow.obj `if test -f 'src/moc_MainWindow.cpp'; then $(CYGPATH_W) 'src/moc_MainWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_MainWindow.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_MainWindow.obj `if test -f 'src/moc_MainWindow.cpp'; then $(CYGPATH_W) 'src/moc_MainWindow.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_MainWindow.cpp'; fi`
 
 src/words_searcher-moc_SettingsDialog.o: src/moc_SettingsDialog.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_SettingsDialog.o -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_SettingsDialog.Tpo -c -o src/words_searcher-moc_SettingsDialog.o `test -f 'src/moc_SettingsDialog.cpp' || echo '$(srcdir)/'`src/moc_SettingsDialog.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_SettingsDialog.o -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_SettingsDialog.Tpo -c -o src/words_searcher-moc_SettingsDialog.o `test -f 'src/moc_SettingsDialog.cpp' || echo '$(srcdir)/'`src/moc_SettingsDialog.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-moc_SettingsDialog.Tpo src/$(DEPDIR)/words_searcher-moc_SettingsDialog.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/moc_SettingsDialog.cpp' object='src/words_searcher-moc_SettingsDialog.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_SettingsDialog.o `test -f 'src/moc_SettingsDialog.cpp' || echo '$(srcdir)/'`src/moc_SettingsDialog.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_SettingsDialog.o `test -f 'src/moc_SettingsDialog.cpp' || echo '$(srcdir)/'`src/moc_SettingsDialog.cpp
 
 src/words_searcher-moc_SettingsDialog.obj: src/moc_SettingsDialog.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_SettingsDialog.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_SettingsDialog.Tpo -c -o src/words_searcher-moc_SettingsDialog.obj `if test -f 'src/moc_SettingsDialog.cpp'; then $(CYGPATH_W) 'src/moc_SettingsDialog.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_SettingsDialog.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_SettingsDialog.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_SettingsDialog.Tpo -c -o src/words_searcher-moc_SettingsDialog.obj `if test -f 'src/moc_SettingsDialog.cpp'; then $(CYGPATH_W) 'src/moc_SettingsDialog.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_SettingsDialog.cpp'; fi`
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-moc_SettingsDialog.Tpo src/$(DEPDIR)/words_searcher-moc_SettingsDialog.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/moc_SettingsDialog.cpp' object='src/words_searcher-moc_SettingsDialog.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_SettingsDialog.obj `if test -f 'src/moc_SettingsDialog.cpp'; then $(CYGPATH_W) 'src/moc_SettingsDialog.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_SettingsDialog.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_SettingsDialog.obj `if test -f 'src/moc_SettingsDialog.cpp'; then $(CYGPATH_W) 'src/moc_SettingsDialog.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_SettingsDialog.cpp'; fi`
 
 src/words_searcher-moc_FsProxyModel.o: src/moc_FsProxyModel.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_FsProxyModel.o -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_FsProxyModel.Tpo -c -o src/words_searcher-moc_FsProxyModel.o `test -f 'src/moc_FsProxyModel.cpp' || echo '$(srcdir)/'`src/moc_FsProxyModel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_FsProxyModel.o -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_FsProxyModel.Tpo -c -o src/words_searcher-moc_FsProxyModel.o `test -f 'src/moc_FsProxyModel.cpp' || echo '$(srcdir)/'`src/moc_FsProxyModel.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-moc_FsProxyModel.Tpo src/$(DEPDIR)/words_searcher-moc_FsProxyModel.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/moc_FsProxyModel.cpp' object='src/words_searcher-moc_FsProxyModel.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_FsProxyModel.o `test -f 'src/moc_FsProxyModel.cpp' || echo '$(srcdir)/'`src/moc_FsProxyModel.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_FsProxyModel.o `test -f 'src/moc_FsProxyModel.cpp' || echo '$(srcdir)/'`src/moc_FsProxyModel.cpp
 
 src/words_searcher-moc_FsProxyModel.obj: src/moc_FsProxyModel.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_FsProxyModel.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_FsProxyModel.Tpo -c -o src/words_searcher-moc_FsProxyModel.obj `if test -f 'src/moc_FsProxyModel.cpp'; then $(CYGPATH_W) 'src/moc_FsProxyModel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_FsProxyModel.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT src/words_searcher-moc_FsProxyModel.obj -MD -MP -MF src/$(DEPDIR)/words_searcher-moc_FsProxyModel.Tpo -c -o src/words_searcher-moc_FsProxyModel.obj `if test -f 'src/moc_FsProxyModel.cpp'; then $(CYGPATH_W) 'src/moc_FsProxyModel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_FsProxyModel.cpp'; fi`
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/words_searcher-moc_FsProxyModel.Tpo src/$(DEPDIR)/words_searcher-moc_FsProxyModel.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/moc_FsProxyModel.cpp' object='src/words_searcher-moc_FsProxyModel.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_FsProxyModel.obj `if test -f 'src/moc_FsProxyModel.cpp'; then $(CYGPATH_W) 'src/moc_FsProxyModel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_FsProxyModel.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o src/words_searcher-moc_FsProxyModel.obj `if test -f 'src/moc_FsProxyModel.cpp'; then $(CYGPATH_W) 'src/moc_FsProxyModel.cpp'; else $(CYGPATH_W) '$(srcdir)/src/moc_FsProxyModel.cpp'; fi`
 
 words_searcher-qrc_resources.o: qrc_resources.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT words_searcher-qrc_resources.o -MD -MP -MF $(DEPDIR)/words_searcher-qrc_resources.Tpo -c -o words_searcher-qrc_resources.o `test -f 'qrc_resources.cpp' || echo '$(srcdir)/'`qrc_resources.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT words_searcher-qrc_resources.o -MD -MP -MF $(DEPDIR)/words_searcher-qrc_resources.Tpo -c -o words_searcher-qrc_resources.o `test -f 'qrc_resources.cpp' || echo '$(srcdir)/'`qrc_resources.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/words_searcher-qrc_resources.Tpo $(DEPDIR)/words_searcher-qrc_resources.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='qrc_resources.cpp' object='words_searcher-qrc_resources.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o words_searcher-qrc_resources.o `test -f 'qrc_resources.cpp' || echo '$(srcdir)/'`qrc_resources.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o words_searcher-qrc_resources.o `test -f 'qrc_resources.cpp' || echo '$(srcdir)/'`qrc_resources.cpp
 
 words_searcher-qrc_resources.obj: qrc_resources.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -MT words_searcher-qrc_resources.obj -MD -MP -MF $(DEPDIR)/words_searcher-qrc_resources.Tpo -c -o words_searcher-qrc_resources.obj `if test -f 'qrc_resources.cpp'; then $(CYGPATH_W) 'qrc_resources.cpp'; else $(CYGPATH_W) '$(srcdir)/qrc_resources.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT words_searcher-qrc_resources.obj -MD -MP -MF $(DEPDIR)/words_searcher-qrc_resources.Tpo -c -o words_searcher-qrc_resources.obj `if test -f 'qrc_resources.cpp'; then $(CYGPATH_W) 'qrc_resources.cpp'; else $(CYGPATH_W) '$(srcdir)/qrc_resources.cpp'; fi`
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/words_searcher-qrc_resources.Tpo $(DEPDIR)/words_searcher-qrc_resources.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='qrc_resources.cpp' object='words_searcher-qrc_resources.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(words_searcher_CXXFLAGS) $(CXXFLAGS) -c -o words_searcher-qrc_resources.obj `if test -f 'qrc_resources.cpp'; then $(CYGPATH_W) 'qrc_resources.cpp'; else $(CYGPATH_W) '$(srcdir)/qrc_resources.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(words_searcher_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o words_searcher-qrc_resources.obj `if test -f 'qrc_resources.cpp'; then $(CYGPATH_W) 'qrc_resources.cpp'; else $(CYGPATH_W) '$(srcdir)/qrc_resources.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
