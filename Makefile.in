@@ -1158,6 +1158,7 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
+export TAR
 
 src/moc_%.cpp: src/%.h
 	$(MOC) $< -o $@
