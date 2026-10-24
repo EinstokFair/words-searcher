@@ -11,6 +11,8 @@ V="$1"
 ./tools/bump-version "$V" --autotools doc/REQUIREMENTS.ru.html doc/Testing.ru.html
 
 # Пересобрать Makefile из configure.ac/Makefile.am (чтобы TAR/EXTRA_DIST применились)
+# Фиксируем SOURCE_DATE_EPOCH (как в build:dist), чтобы tarball был детерминирован
+export SOURCE_DATE_EPOCH=0
 ./configure
 make dist
 ./tools/manifest-signer \
