@@ -25,7 +25,7 @@ tar --version | head -n1
 gzip --version | head -n1
 ./tools/manifest-signer \
   "words-searcher-$V.tar.gz" \
-  "packaging/gentoo/app-misc/words-searcher/words-searcher-0.1.ebuild" \
+  "packaging/gentoo/app-misc/words-searcher/words-searcher-0.0.ebuild" \
   "packaging/gentoo/app-misc/words-searcher/Manifest"
 
 git add -A
